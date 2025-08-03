@@ -1,13 +1,25 @@
-<h1>Caido Compare</h1>
-<strong>A professional data comparison plugin for Caido that provides side-by-side comparison with visual difference highlighting</strong><br><br>
+<div align="left">
+  <img src="banner.jpg" alt="Compare Banner" width="100%">
+
+  <p>  <br>
+    <strong>A professional data comparison plugin for Caido that provides side-by-side comparison with visual difference highlighting</strong>
+  </p>
+  <br>
+</div>
+
+---
+
 <details closed>
 <summary><b>Table of Contents</b></summary>
-    
+<br>
+
 - [Overview](#overview)
 - [Features](#features)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
+- [HTTP History Integration](#http-history-integration)
 - [Documentation](#documentation)
+- [Updates](#updates)
 - [Feedback & Issues](#feedback--issues)
 - [License](#license)
 </details>
@@ -37,15 +49,16 @@ Built specifically for penetration testers and security researchers, Compare int
 - **Clipboard Integration:** Paste content directly from clipboard
 - **File Loading:** Support for various file formats up to 10MB
 - **HTTP History Integration:** Direct integration with Caido's HTTP history
-- **Context Menu Support:** Right-click to send requests/responses to Compare
+- **Context Menu Support:** Right-click to send requests/responses to Original or Modified
 </details>
 
 <details>
 <summary><b>Advanced Panel Management</b></summary>
 <br>
 
-- **Dual-Panel Layout:** Independent Panel 1 and Panel 2 for comparison
+- **Dual-Panel Layout:** Independent Original and Modified panels for comparison
 - **Multi-Item Storage:** Store multiple items per panel with metadata
+- **Transfer Between Panels:** Right-click any item to transfer between Original and Modified
 - **Bulk Operations:** Select multiple items for removal or management
 - **Data Persistence:** Automatic project-based data storage
 </details>
@@ -94,18 +107,22 @@ Built specifically for penetration testers and security researchers, Compare int
 1. **Add Data to Panels:**
    - Use "Paste" to add clipboard content
    - Use "Load" to select files from your system
-   - Right-click requests in HTTP History → "Compare: Send to Panel"
+   - Right-click requests in HTTP History → "Compare: Send to Original" or "Send to Modified"
 
-2. **Select Items:**
-   - Click one item in Panel 1
-   - Click one item in Panel 2
+2. **Organize Data:**
+   - Right-click any item to transfer between Original and Modified panels
+   - Use "Remove" to delete selected items or "Clear" to empty panels
+
+3. **Select Items:**
+   - Click one item in Original panel
+   - Click one item in Modified panel
    - Compare buttons will be enabled
 
-3. **Compare:**
+4. **Compare:**
    - Click "Compare Words" for text analysis
    - Click "Compare Bytes" for precise character analysis
 
-4. **Analyze Results:**
+5. **Analyze Results:**
    - Review color-coded differences in the comparison modal
    - Use "Sync Views" for synchronized scrolling
    - Check statistics for detailed difference counts

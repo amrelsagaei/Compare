@@ -64,7 +64,7 @@ const saveItemToPanel = async (
   source?: string,
   metadata?: Record<string, any>
 ): Promise<CompareStorageResult<CompareItem>> => {
-  logOperation(sdk, `Saving item to panel ${panelNumber}`, { type, source, dataLength: data.length });
+  logOperation(sdk, `Saving item to ${panelNumber === 1 ? 'Original' : 'Modified'}`, { type, source, dataLength: data.length });
   
   // Validate data
   const validation = validateItemData(data);
@@ -103,10 +103,10 @@ const saveItemToPanel = async (
       };
     }
     
-    logOperation(sdk, `Successfully saved item ${item.id} to panel ${panelNumber}`);
+    logOperation(sdk, `Successfully saved item ${item.id} to ${panelNumber === 1 ? 'Original' : 'Modified'}`);
     return { success: true, data: item };
   } catch (error) {
-    logOperation(sdk, `Error saving item to panel ${panelNumber}`, { error: (error as Error).message });
+    logOperation(sdk, `Error saving item to ${panelNumber === 1 ? 'Original' : 'Modified'}`, { error: (error as Error).message });
     return {
       success: false,
       error: `Failed to save item: ${(error as Error).message}`
@@ -115,7 +115,7 @@ const saveItemToPanel = async (
 };
 
 const loadPanelData = async (sdk: SDK, panelNumber: 1 | 2): Promise<CompareStorageResult<PanelDataResponse>> => {
-  logOperation(sdk, `Loading data for panel ${panelNumber}`);
+  logOperation(sdk, `Loading data for ${panelNumber === 1 ? 'Original' : 'Modified'}`);
   
   try {
     const store = CompareStore.get();
@@ -127,12 +127,12 @@ const loadPanelData = async (sdk: SDK, panelNumber: 1 | 2): Promise<CompareStora
       lastUpdated: new Date()
     };
     
-    logOperation(sdk, `Loaded ${items.length} items for panel ${panelNumber}`);
+    logOperation(sdk, `Loaded ${items.length} items for ${panelNumber === 1 ? 'Original' : 'Modified'}`);
     return { success: true, data: response };
   } catch (error) {
     return {
       success: false,
-      error: `Failed to load panel data: ${(error as Error).message}`
+      error: `Failed to load ${panelNumber === 1 ? 'Original' : 'Modified'} data: ${(error as Error).message}`
     };
   }
 };
@@ -142,7 +142,7 @@ const removeItemFromPanel = async (
   panelNumber: 1 | 2, 
   itemId: number
 ): Promise<Result<void>> => {
-  logOperation(sdk, `Removing item ${itemId} from panel ${panelNumber}`);
+  logOperation(sdk, `Removing item ${itemId} from ${panelNumber === 1 ? 'Original' : 'Modified'}`);
   
   try {
     const store = CompareStore.get();
@@ -152,7 +152,7 @@ const removeItemFromPanel = async (
     if (!item) {
       return {
         kind: "Error",
-        error: `Item ${itemId} not found in panel ${panelNumber}`
+        error: `Item ${itemId} not found in ${panelNumber === 1 ? 'Original' : 'Modified'}`
       };
     }
     
@@ -163,10 +163,10 @@ const removeItemFromPanel = async (
     store.deletePanelItem(panelNumber, itemId);
     
     // Always consider it success - goal is to have item removed
-    logOperation(sdk, `Successfully removed item ${itemId} from panel ${panelNumber}`, { fileDeleted });
+    logOperation(sdk, `Successfully removed item ${itemId} from ${panelNumber === 1 ? 'Original' : 'Modified'}`, { fileDeleted });
     return { kind: "Success", value: undefined };
   } catch (error) {
-    logOperation(sdk, `Error removing item ${itemId}`, { error: (error as Error).message });
+    logOperation(sdk, `Error removing item ${itemId} from ${panelNumber === 1 ? 'Original' : 'Modified'}`, { error: (error as Error).message });
     return {
       kind: "Error",
       error: `Failed to remove item: ${(error as Error).message}`
@@ -175,7 +175,7 @@ const removeItemFromPanel = async (
 };
 
 const clearPanelData = async (sdk: SDK, panelNumber: 1 | 2): Promise<Result<void>> => {
-  logOperation(sdk, `Clearing all data from panel ${panelNumber}`);
+  logOperation(sdk, `Clearing all data from ${panelNumber === 1 ? 'Original' : 'Modified'}`);
   
   try {
     const store = CompareStore.get();
@@ -187,13 +187,13 @@ const clearPanelData = async (sdk: SDK, panelNumber: 1 | 2): Promise<Result<void
     store.clearPanel(panelNumber);
     
     // Always report success - goal is to have panel cleared
-    logOperation(sdk, `Successfully cleared panel ${panelNumber}`, { filesCleared });
+    logOperation(sdk, `Successfully cleared ${panelNumber === 1 ? 'Original' : 'Modified'}`, { filesCleared });
     return { kind: "Success", value: undefined };
   } catch (error) {
-    logOperation(sdk, `Error clearing panel ${panelNumber}`, { error: (error as Error).message });
+    logOperation(sdk, `Error clearing ${panelNumber === 1 ? 'Original' : 'Modified'}`, { error: (error as Error).message });
     return {
       kind: "Error",
-      error: `Failed to clear panel: ${(error as Error).message}`
+      error: `Failed to clear ${panelNumber === 1 ? 'Original' : 'Modified'}: ${(error as Error).message}`
     };
   }
 };
@@ -466,10 +466,10 @@ const addRequestToPanel = async (
       throw new Error('Failed to save item to file storage');
     }
     
-    logOperation(sdk, `Successfully added request ${newItem.id} to panel ${panelNumber}`);
+    logOperation(sdk, `Successfully added request ${newItem.id} to ${panelNumber === 1 ? 'Original' : 'Modified'}`);
     return requestId;
   } catch (error) {
-    logOperation(sdk, `Error adding request to panel ${panelNumber}`);
+    logOperation(sdk, `Error adding request to ${panelNumber === 1 ? 'Original' : 'Modified'}`);
     throw error;
   }
 };

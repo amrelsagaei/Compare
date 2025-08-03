@@ -157,7 +157,7 @@ onUnmounted(() => {
         <div class="grid grid-cols-2 gap-6">
           <div>
             <h3 class="font-semibold text-sm text-surface-700 dark:text-surface-300 mb-2">
-              Panel 1 (ID: {{ comparisonResult.id1 }})
+              Original (ID: {{ comparisonResult.id1 }})
             </h3>
             <div class="flex flex-wrap gap-2 text-xs">
               <Badge :value="`Length: ${comparisonResult.length1}`" severity="info" />
@@ -166,7 +166,7 @@ onUnmounted(() => {
           </div>
           <div>
             <h3 class="font-semibold text-sm text-surface-700 dark:text-surface-300 mb-2">
-              Panel 2 (ID: {{ comparisonResult.id2 }})
+              Modified (ID: {{ comparisonResult.id2 }})
             </h3>
             <div class="flex flex-wrap gap-2 text-xs">
               <Badge :value="`Length: ${comparisonResult.length2}`" severity="info" />
@@ -181,7 +181,7 @@ onUnmounted(() => {
         <!-- Left Panel -->
         <div class="border border-surface-300 dark:border-surface-700 rounded-lg overflow-hidden">
           <div class="bg-surface-100 dark:bg-surface-800 px-3 py-2 border-b border-surface-300 dark:border-surface-700">
-            <span class="text-sm font-medium">Panel 1 (ID: {{ comparisonResult.id1 }})</span>
+            <span class="text-sm font-medium">Original (ID: {{ comparisonResult.id1 }})</span>
           </div>
           <div 
             ref="leftScrollArea"
@@ -200,7 +200,7 @@ onUnmounted(() => {
         <!-- Right Panel -->
         <div class="border border-surface-300 dark:border-surface-700 rounded-lg overflow-hidden">
           <div class="bg-surface-100 dark:bg-surface-800 px-3 py-2 border-b border-surface-300 dark:border-surface-700">
-            <span class="text-sm font-medium">Panel 2 (ID: {{ comparisonResult.id2 }})</span>
+            <span class="text-sm font-medium">Modified (ID: {{ comparisonResult.id2 }})</span>
           </div>
           <div 
             ref="rightScrollArea"

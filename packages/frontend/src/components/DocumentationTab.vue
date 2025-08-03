@@ -101,7 +101,8 @@ export default {
           <p class="text-surface-300 dark:text-surface-300 mb-4">Get started with Compare in 4 simple steps:</p>
           <ol class="list-decimal pl-6 space-y-2 text-surface-100 dark:text-surface-100">
             <li><strong>Add Data:</strong> Paste content, load files, or send from HTTP History</li>
-            <li><strong>Select Items:</strong> Choose one item from Panel 1 and one from Panel 2</li>
+            <li><strong>Organize:</strong> Right-click items to transfer between Original and Modified</li>
+            <li><strong>Select Items:</strong> Choose one item from Original and one from Modified</li>
             <li><strong>Compare:</strong> Click "Compare Words" or "Compare Bytes"</li>
             <li><strong>Analyze:</strong> Review differences with color-coded highlighting</li>
           </ol>
@@ -125,7 +126,7 @@ export default {
           <ul class="list-disc pl-5 space-y-1 text-sm text-surface-100 dark:text-surface-100 mb-4">
             <li><strong>Paste:</strong> Copy content to clipboard and click "Paste"</li>
             <li><strong>Load File:</strong> Select files from your system</li>
-            <li><strong>HTTP History:</strong> Right-click requests → "Compare: Send to Panel"</li>
+            <li><strong>HTTP History:</strong> Right-click requests → "Compare: Send to Original/Modified"</li>
           </ul>
           
           <h4 class="font-medium text-blue-400 dark:text-blue-400 mb-2">File Support:</h4>
@@ -173,15 +174,16 @@ export default {
           
           <h4 class="font-medium text-purple-400 dark:text-purple-400 mb-2">Operations:</h4>
           <ul class="list-disc pl-5 space-y-1 text-sm text-surface-100 dark:text-surface-100 mb-4">
-            <li><strong>Remove:</strong> Delete selected items from panels</li>
-            <li><strong>Clear:</strong> Remove all items from a panel</li>
+            <li><strong>Remove:</strong> Delete selected items from Original/Modified</li>
+            <li><strong>Clear:</strong> Remove all items from Original or Modified</li>
+            <li><strong>Transfer:</strong> Right-click any item to transfer between panels</li>
             <li><strong>Multi-select:</strong> Bulk operations on multiple items</li>
           </ul>
           
           <h4 class="font-medium text-purple-400 dark:text-purple-400 mb-2">Selection:</h4>
           <ul class="list-disc pl-5 space-y-1 text-sm text-surface-100 dark:text-surface-100">
             <li>Click items to select for comparison</li>
-            <li>Requires one item from each panel</li>
+            <li>Requires one item from Original and one from Modified</li>
             <li>Data automatically persists per project</li>
           </ul>
         </div>
@@ -226,7 +228,7 @@ export default {
             <h4 class="font-medium text-indigo-400 dark:text-indigo-400 mb-2">Individual Requests:</h4>
             <ol class="list-decimal pl-5 space-y-1 text-sm text-surface-100 dark:text-surface-100">
               <li>Right-click any request in Caido HTTP History</li>
-              <li>Select "Compare: Send to Panel 1" or "Panel 2"</li>
+              <li>Select "Compare: Send to Original" or "Send to Modified"</li>
               <li>Request data appears automatically in Compare</li>
             </ol>
           </div>
@@ -234,7 +236,7 @@ export default {
             <h4 class="font-medium text-indigo-400 dark:text-indigo-400 mb-2">Bulk Operations:</h4>
             <ol class="list-decimal pl-5 space-y-1 text-sm text-surface-100 dark:text-surface-100">
               <li>Select multiple requests (up to 25)</li>
-              <li>Right-click → "Compare: Send to Panel"</li>
+              <li>Right-click → "Compare: Send to Original/Modified"</li>
               <li>All requests processed automatically</li>
             </ol>
           </div>

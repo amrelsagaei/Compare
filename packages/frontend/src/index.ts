@@ -9,14 +9,14 @@ import App from "./views/App.vue";
 
 // Command definitions for the plugin
 const Commands = {
-  sendToPanel1: "compare.send-to-panel-1",
-  sendToPanel2: "compare.send-to-panel-2",
-  sendRowsToPanel1: "compare.send-rows-to-panel-1", 
-  sendRowsToPanel2: "compare.send-rows-to-panel-2",
+  sendToOriginal: "compare.send-to-original",
+  sendToModified: "compare.send-to-modified",
+  sendRowsToOriginal: "compare.send-rows-to-original", 
+  sendRowsToModified: "compare.send-rows-to-modified",
 } as const;
 
-// Context menu command handler for Panel 1 - REQUESTS ONLY
-const sendToPanel1 = async (sdk: FrontendSDK, context: any) => {
+// Context menu command handler for Original - REQUESTS ONLY
+const sendToOriginal = async (sdk: FrontendSDK, context: any) => {
   try {
     // Extract request from context (simplified - requests only)
     let request = context.request;
@@ -73,16 +73,16 @@ const sendToPanel1 = async (sdk: FrontendSDK, context: any) => {
     
     // Show success notification
     try {
-      await sdk.window.showToast("Request sent to Panel 1", {
+      await sdk.window.showToast("Request sent to Original", {
         variant: 'success',
         duration: 3000
       });
     } catch (error) {
-      console.log("Request sent to Panel 1");
+      console.log("Request sent to Original");
     }
     
   } catch (error) {
-    console.error("[Compare] Failed to send request to Panel 1:", error);
+    console.error("[Compare] Failed to send request to Original:", error);
     
     // Show error notification
     try {
@@ -96,8 +96,8 @@ const sendToPanel1 = async (sdk: FrontendSDK, context: any) => {
   }
 };
 
-// Context menu command handler for Panel 2 - REQUESTS ONLY
-const sendToPanel2 = async (sdk: FrontendSDK, context: any) => {
+// Context menu command handler for Modified - REQUESTS ONLY
+const sendToModified = async (sdk: FrontendSDK, context: any) => {
   try {
     // Extract request from context (simplified - requests only)
     let request = context.request;
@@ -154,16 +154,16 @@ const sendToPanel2 = async (sdk: FrontendSDK, context: any) => {
     
     // Show success notification
     try {
-      await sdk.window.showToast("Request sent to Panel 2", {
+      await sdk.window.showToast("Request sent to Modified", {
         variant: 'success',
         duration: 3000
       });
     } catch (error) {
-      console.log("Request sent to Panel 2");
+      console.log("Request sent to Modified");
     }
     
   } catch (error) {
-    console.error("[Compare] Failed to send request to Panel 2:", error);
+    console.error("[Compare] Failed to send request to Modified:", error);
     
     // Show error notification
     try {
@@ -178,16 +178,16 @@ const sendToPanel2 = async (sdk: FrontendSDK, context: any) => {
 };
 
 // Context menu command handler for request rows
-const sendRowsToPanel1 = async (sdk: FrontendSDK, context: any) => {
+const sendRowsToOriginal = async (sdk: FrontendSDK, context: any) => {
   try {
     // Show initial notification
     try {
-      await sdk.window.showToast("Processing selected requests for Panel 1...", {
+      await sdk.window.showToast("Processing selected requests for Original...", {
         variant: 'info',
         duration: 3000
       });
     } catch (error) {
-      console.log("Processing selected requests for Panel 1...");
+      console.log("Processing selected requests for Original...");
     }
     
     if (!context || !context.requests || !context.requests.length) {
@@ -261,16 +261,16 @@ const sendRowsToPanel1 = async (sdk: FrontendSDK, context: any) => {
     
     // Show success notification
     try {
-      await sdk.window.showToast(`${requestsToProcess.length} request(s) sent to Panel 1`, {
+      await sdk.window.showToast(`${requestsToProcess.length} request(s) sent to Original`, {
         variant: 'success',
         duration: 3000
       });
     } catch (error) {
-      console.log(`${requestsToProcess.length} request(s) sent to Panel 1`);
+      console.log(`${requestsToProcess.length} request(s) sent to Original`);
     }
     
   } catch (error) {
-    console.error("[Compare] Failed to send requests to Panel 1:", error);
+    console.error("[Compare] Failed to send requests to Original:", error);
     
     // Show error notification
     try {
@@ -284,17 +284,17 @@ const sendRowsToPanel1 = async (sdk: FrontendSDK, context: any) => {
   }
 };
 
-// Context menu command handler for request rows Panel 2
-const sendRowsToPanel2 = async (sdk: FrontendSDK, context: any) => {
+// Context menu command handler for request rows Modified
+const sendRowsToModified = async (sdk: FrontendSDK, context: any) => {
   try {
     // Show initial notification
     try {
-      await sdk.window.showToast("Processing selected requests for Panel 2...", {
+      await sdk.window.showToast("Processing selected requests for Modified...", {
         variant: 'info',
         duration: 3000
       });
     } catch (error) {
-      console.log("Processing selected requests for Panel 2...");
+      console.log("Processing selected requests for Modified...");
     }
     
     if (!context || !context.requests || !context.requests.length) {
@@ -371,16 +371,16 @@ const sendRowsToPanel2 = async (sdk: FrontendSDK, context: any) => {
     
     // Show success notification
     try {
-      await sdk.window.showToast(`${requestsToProcess.length} request(s) sent to Panel 2`, {
+      await sdk.window.showToast(`${requestsToProcess.length} request(s) sent to Modified`, {
         variant: 'success',
         duration: 3000
       });
     } catch (error) {
-      console.log(`${requestsToProcess.length} request(s) sent to Panel 2`);
+      console.log(`${requestsToProcess.length} request(s) sent to Modified`);
     }
     
   } catch (error) {
-    console.error("[Compare] Failed to send requests to Panel 2:", error);
+    console.error("[Compare] Failed to send requests to Modified:", error);
     
     // Show error notification
     try {
@@ -431,49 +431,49 @@ export const init = (sdk: FrontendSDK) => {
   });
 
   // Register context menu commands
-  sdk.commands.register(Commands.sendToPanel1, {
-    name: "Send to Panel 1",
-    run: (context) => sendToPanel1(sdk, context),
+  sdk.commands.register(Commands.sendToOriginal, {
+    name: "Send to Original",
+    run: (context) => sendToOriginal(sdk, context),
   });
 
-  sdk.commands.register(Commands.sendToPanel2, {
-    name: "Send to Panel 2",
-    run: (context) => sendToPanel2(sdk, context),
+  sdk.commands.register(Commands.sendToModified, {
+    name: "Send to Modified",
+    run: (context) => sendToModified(sdk, context),
   });
 
-  sdk.commands.register(Commands.sendRowsToPanel1, {
-    name: "Send to Panel 1",
-    run: (context) => sendRowsToPanel1(sdk, context),
+  sdk.commands.register(Commands.sendRowsToOriginal, {
+    name: "Send to Original",
+    run: (context) => sendRowsToOriginal(sdk, context),
   });
 
-  sdk.commands.register(Commands.sendRowsToPanel2, {
-    name: "Send to Panel 2", 
-    run: (context) => sendRowsToPanel2(sdk, context),
+  sdk.commands.register(Commands.sendRowsToModified, {
+    name: "Send to Modified", 
+    run: (context) => sendRowsToModified(sdk, context),
   });
 
   // Register context menu item for individual requests
   sdk.menu.registerItem({
     type: "Request",
-    commandId: Commands.sendToPanel1,
+    commandId: Commands.sendToOriginal,
     leadingIcon: "fas fa-columns",
   });
 
   sdk.menu.registerItem({
     type: "Request",
-    commandId: Commands.sendToPanel2,
+    commandId: Commands.sendToModified,
     leadingIcon: "fas fa-columns",
   });
 
   // Register context menu item for request rows (table view)
   sdk.menu.registerItem({
     type: "RequestRow",
-    commandId: Commands.sendRowsToPanel1,
+    commandId: Commands.sendRowsToOriginal,
     leadingIcon: "fas fa-columns",
   });
 
   sdk.menu.registerItem({
     type: "RequestRow",
-    commandId: Commands.sendRowsToPanel2,
+    commandId: Commands.sendRowsToModified,
     leadingIcon: "fas fa-columns",
   });
 

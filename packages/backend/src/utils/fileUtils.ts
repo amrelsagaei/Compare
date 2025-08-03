@@ -57,7 +57,7 @@ export async function saveItemToFile(sdk: SDK, panelNumber: 1 | 2, item: Compare
     };
     
     await writeFile(itemPath, JSON.stringify(storageItem, null, 2));
-    sdk.console.log(`Saved item ${item.id} to panel ${panelNumber} file`);
+    sdk.console.log(`Saved item ${item.id} to ${panelNumber === 1 ? 'Original' : 'Modified'} file`);
     return true;
   } catch (error) {
     sdk.console.error(`Failed to save item ${item.id} to file: ${(error as Error).message}`);
@@ -69,7 +69,7 @@ export async function deleteItemFile(sdk: SDK, panelNumber: 1 | 2, itemId: numbe
   try {
     const itemPath = getItemPath(sdk, panelNumber, itemId);
     await rm(itemPath);
-    sdk.console.log(`Deleted item ${itemId} file from panel ${panelNumber}`);
+    sdk.console.log(`Deleted item ${itemId} file from ${panelNumber === 1 ? 'Original' : 'Modified'}`);
     return true;
   } catch (error) {
     // If the file doesn't exist, that's actually fine - consider it successful
@@ -109,9 +109,9 @@ export async function loadItemsFromFiles(sdk: SDK, panelNumber: 1 | 2): Promise<
       }
     }
     
-    sdk.console.log(`Loaded ${items.length} items from panel ${panelNumber} files`);
+    sdk.console.log(`Loaded ${items.length} items from ${panelNumber === 1 ? 'Original' : 'Modified'} files`);
   } catch (error) {
-    sdk.console.error(`Failed to load items from panel ${panelNumber}: ${(error as Error).message}`);
+    sdk.console.error(`Failed to load items from ${panelNumber === 1 ? 'Original' : 'Modified'}: ${(error as Error).message}`);
   }
   
   return items;
@@ -138,11 +138,11 @@ export async function clearPanelFiles(sdk: SDK, panelNumber: 1 | 2): Promise<boo
         });
       
       await Promise.all(deletePromises);
-      sdk.console.log(`Cleared ${files.filter(f => f.endsWith('.json')).length} files from panel ${panelNumber}`);
+      sdk.console.log(`Cleared ${files.filter(f => f.endsWith('.json')).length} files from ${panelNumber === 1 ? 'Original' : 'Modified'}`);
     } catch (dirError) {
       // If directory doesn't exist, that's fine - nothing to clear
       if ((dirError as any).code === 'ENOENT') {
-        sdk.console.log(`Panel ${panelNumber} directory doesn't exist - nothing to clear`);
+        sdk.console.log(`${panelNumber === 1 ? 'Original' : 'Modified'} directory doesn't exist - nothing to clear`);
         return true;
       }
       throw dirError;
@@ -150,7 +150,7 @@ export async function clearPanelFiles(sdk: SDK, panelNumber: 1 | 2): Promise<boo
     
     return true;
   } catch (error) {
-    sdk.console.error(`Failed to clear panel ${panelNumber} files: ${(error as Error).message}`);
+    sdk.console.error(`Failed to clear ${panelNumber === 1 ? 'Original' : 'Modified'} files: ${(error as Error).message}`);
     return false;
   }
 }

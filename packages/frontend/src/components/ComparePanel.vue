@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import Button from "primevue/button";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Toolbar from "primevue/toolbar";
 import Panel from "primevue/panel";
 import Badge from "primevue/badge";
+import ContextMenu from "primevue/contextmenu";
 import type { CompareItem, PanelState } from "../types";
 
 // Props
@@ -23,6 +24,7 @@ const emit = defineEmits<{
   load: [panelNumber: 1 | 2];
   remove: [panelNumber: 1 | 2];
   clear: [panelNumber: 1 | 2];
+  transfer: [item: CompareItem, fromPanel: 1 | 2];
   "update:selection": [items: CompareItem[]];
 }>();
 
@@ -32,7 +34,11 @@ const selectedItems = computed({
   set: (value: CompareItem[]) => emit("update:selection", value)
 });
 
-const panelTitle = computed(() => `Panel ${props.panelNumber}`);
+const panelTitle = computed(() => props.panelNumber === 1 ? 'Original' : 'Modified');
+
+// Context menu state
+const contextMenu = ref();
+const selectedItemForTransfer = ref<CompareItem | null>(null);
 
 // Helper functions
 const formatNumber = (num: number): string => {
@@ -53,6 +59,24 @@ const handlePaste = () => emit("paste", props.panelNumber);
 const handleLoad = () => emit("load", props.panelNumber);
 const handleRemove = () => emit("remove", props.panelNumber);
 const handleClear = () => emit("clear", props.panelNumber);
+
+// Context menu functionality
+const contextMenuItems = computed(() => [
+  {
+    label: `Transfer to ${props.panelNumber === 1 ? 'Modified' : 'Original'}`,
+    icon: 'fas fa-exchange-alt',
+    command: () => {
+      if (selectedItemForTransfer.value) {
+        emit("transfer", selectedItemForTransfer.value, props.panelNumber);
+      }
+    }
+  }
+]);
+
+const onRowContextMenu = (event: any) => {
+  selectedItemForTransfer.value = event.data;
+  contextMenu.value.show(event.originalEvent);
+};
 </script>
 
 <template>
@@ -119,6 +143,7 @@ const handleClear = () => emit("clear", props.panelNumber);
         scroll-height="100%"
         class="text-sm"
         :loading="panelState.loading"
+        @row-contextmenu="onRowContextMenu"
         :pt="{
           table: { class: 'min-w-full' },
           thead: { class: 'bg-surface-100 dark:bg-surface-800' },
@@ -157,6 +182,13 @@ const handleClear = () => emit("clear", props.panelNumber);
         </Column>
       </DataTable>
     </div>
+
+    <!-- Context Menu -->
+    <ContextMenu 
+      ref="contextMenu" 
+      :model="contextMenuItems" 
+      class="text-sm"
+    />
   </Panel>
 </template>
 

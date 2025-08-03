@@ -15,14 +15,14 @@ import DocumentationTab from "../components/DocumentationTab.vue";
 const sdk = useSDK();
 
 // Enhanced reactive state for both panels
-const panel1State = ref<PanelState>({
+const originalState = ref<PanelState>({
   items: [],
   selectedItems: [],
   loading: false,
   error: null
 });
 
-const panel2State = ref<PanelState>({
+const modifiedState = ref<PanelState>({
   items: [],
   selectedItems: [],
   loading: false,
@@ -71,7 +71,7 @@ const handleStorageResult = <T>(result: any, successContext: string): T | null =
 
 // Load panel data from backend storage
 const loadPanelData = async (panelNumber: 1 | 2) => {
-  const panelState = panelNumber === 1 ? panel1State.value : panel2State.value;
+  const panelState = panelNumber === 1 ? originalState.value : modifiedState.value;
   
   panelState.loading = true;
   panelState.error = null;
@@ -79,11 +79,11 @@ const loadPanelData = async (panelNumber: 1 | 2) => {
   try {
     const result = await handleApiCall(
       (sdk.backend as any).loadPanelData(panelNumber),
-      `Failed to load panel ${panelNumber} data`
+      `Failed to load ${panelNumber === 1 ? 'Original' : 'Modified'} data`
     );
     
     if (result && typeof result === 'object' && result !== null && (('success' in result) || ('kind' in result))) {
-      const data = handleStorageResult(result as any, `Panel ${panelNumber} load`);
+      const data = handleStorageResult(result as any, `${panelNumber === 1 ? 'Original' : 'Modified'} load`);
       if (data && typeof data === 'object' && data !== null && 'items' in data) {
         // Convert timestamp strings back to Date objects
         const items = (data as any).items.map((item: any) => ({
@@ -111,11 +111,11 @@ const saveItemToBackend = async (panelNumber: 1 | 2, item: CompareItem) => {
       item.source,
       item.metadata
     ),
-    `Failed to save item to panel ${panelNumber}`
+    `Failed to save item to ${panelNumber === 1 ? 'Original' : 'Modified'}`
   );
   
   if (result && typeof result === 'object' && ('success' in result || 'kind' in result)) {
-    const savedItem = handleStorageResult(result as any, `Save to panel ${panelNumber}`);
+    const savedItem = handleStorageResult(result as any, `Save to ${panelNumber === 1 ? 'Original' : 'Modified'}`);
     if (savedItem) {
       // Reload panel data to ensure consistency
       await loadPanelData(panelNumber);
@@ -128,7 +128,7 @@ const saveItemToBackend = async (panelNumber: 1 | 2, item: CompareItem) => {
 
 // Enhanced control button handlers with backend integration
 const handlePaste = async (panelNumber: 1 | 2) => {
-  const panelState = panelNumber === 1 ? panel1State.value : panel2State.value;
+  const panelState = panelNumber === 1 ? originalState.value : modifiedState.value;
   panelState.loading = true;
   
   try {
@@ -152,7 +152,7 @@ const handlePaste = async (panelNumber: 1 | 2) => {
       // Save processed item to backend storage
       const saved = await saveItemToBackend(panelNumber, item);
       if (saved) {
-        sdk.window.showToast(`Data pasted to Panel ${panelNumber}`, { variant: "success" });
+        sdk.window.showToast(`Data pasted to ${panelNumber === 1 ? 'Original' : 'Modified'}`, { variant: "success" });
       }
     } else {
       sdk.window.showToast((result as any)?.error || "Failed to process clipboard data", { variant: "error" });
@@ -165,7 +165,7 @@ const handlePaste = async (panelNumber: 1 | 2) => {
 };
 
 const handleLoad = (panelNumber: 1 | 2) => {
-  const panelState = panelNumber === 1 ? panel1State.value : panel2State.value;
+  const panelState = panelNumber === 1 ? originalState.value : modifiedState.value;
   
   // Create file input element
   const input = document.createElement('input');
@@ -195,7 +195,7 @@ const handleLoad = (panelNumber: 1 | 2) => {
         // Save processed item to backend storage
         const saved = await saveItemToBackend(panelNumber, item);
         if (saved) {
-          sdk.window.showToast(`File "${file.name}" loaded to Panel ${panelNumber}`, { variant: "success" });
+          sdk.window.showToast(`File "${file.name}" loaded to ${panelNumber === 1 ? 'Original' : 'Modified'}`, { variant: "success" });
         }
       } else {
         sdk.window.showToast((result as any)?.error || "Failed to process file", { variant: "error" });
@@ -211,7 +211,7 @@ const handleLoad = (panelNumber: 1 | 2) => {
 };
 
 const handleRemove = async (panelNumber: 1 | 2) => {
-  const panelState = panelNumber === 1 ? panel1State.value : panel2State.value;
+  const panelState = panelNumber === 1 ? originalState.value : modifiedState.value;
   
   if (panelState.selectedItems.length === 0) {
     sdk.window.showToast("No items selected", { variant: "warning" });
@@ -222,15 +222,15 @@ const handleRemove = async (panelNumber: 1 | 2) => {
   
   try {
     // Remove items from backend storage
-    const removePromises = panelState.selectedItems.map(item =>
+    const removePromises = panelState.selectedItems.map((item: CompareItem) =>
       handleApiCall(
         (sdk.backend as any).removeItemFromPanel(panelNumber, item.id),
-        `Failed to remove item ${item.id}`
+        `Failed to remove item ${item.id} from ${panelNumber === 1 ? 'Original' : 'Modified'}`
       )
     );
     
     const results = await Promise.all(removePromises);
-    const successCount = results.filter(result => {
+    const successCount = results.filter((result: any) => {
       if (result && typeof result === 'object') {
         return (result as any).kind === "Success" || (result as any).success === true;
       }
@@ -240,7 +240,7 @@ const handleRemove = async (panelNumber: 1 | 2) => {
     if (successCount > 0) {
       // Reload panel data to reflect changes
       await loadPanelData(panelNumber);
-      sdk.window.showToast(`Removed ${successCount} item(s) from Panel ${panelNumber}`, { variant: "success" });
+      sdk.window.showToast(`Removed ${successCount} item(s) from ${panelNumber === 1 ? 'Original' : 'Modified'}`, { variant: "success" });
     }
   } finally {
     panelState.loading = false;
@@ -248,10 +248,10 @@ const handleRemove = async (panelNumber: 1 | 2) => {
 };
 
 const handleClear = async (panelNumber: 1 | 2) => {
-  const panelState = panelNumber === 1 ? panel1State.value : panel2State.value;
+  const panelState = panelNumber === 1 ? originalState.value : modifiedState.value;
   
   if (panelState.items.length === 0) {
-    sdk.window.showToast(`Panel ${panelNumber} is already empty`, { variant: "info" });
+    sdk.window.showToast(`${panelNumber === 1 ? 'Original' : 'Modified'} is already empty`, { variant: "info" });
     return;
   }
 
@@ -260,7 +260,7 @@ const handleClear = async (panelNumber: 1 | 2) => {
   try {
     const result = await handleApiCall(
       (sdk.backend as any).clearPanelData(panelNumber),
-      `Failed to clear panel ${panelNumber}`
+      `Failed to clear ${panelNumber === 1 ? 'Original' : 'Modified'}`
     );
     
     if (result && typeof result === 'object' && (
@@ -268,45 +268,90 @@ const handleClear = async (panelNumber: 1 | 2) => {
     )) {
       // Reload panel data to reflect changes
       await loadPanelData(panelNumber);
-      sdk.window.showToast(`Panel ${panelNumber} cleared`, { variant: "success" });
+      sdk.window.showToast(`${panelNumber === 1 ? 'Original' : 'Modified'} cleared`, { variant: "success" });
     } else {
-      sdk.window.showToast((result as any)?.error || `Failed to clear panel ${panelNumber}`, { variant: "error" });
+      sdk.window.showToast((result as any)?.error || `Failed to clear ${panelNumber === 1 ? 'Original' : 'Modified'}`, { variant: "error" });
     }
   } finally {
     panelState.loading = false;
   }
 };
 
+// Transfer item between panels
+const handleTransfer = async (item: CompareItem, fromPanel: 1 | 2) => {
+  const toPanel = fromPanel === 1 ? 2 : 1;
+  const fromPanelState = fromPanel === 1 ? originalState.value : modifiedState.value;
+  const toPanelState = fromPanel === 1 ? modifiedState.value : originalState.value;
+  
+  fromPanelState.loading = true;
+  toPanelState.loading = true;
+  
+  try {
+    // Save item to destination panel
+    const saved = await saveItemToBackend(toPanel, item);
+    
+    if (saved) {
+      // Remove item from source panel
+      const removeResult = await handleApiCall(
+        (sdk.backend as any).removeItemFromPanel(fromPanel, item.id),
+        `Failed to remove item from ${fromPanel === 1 ? 'Original' : 'Modified'}`
+      );
+      
+      if (removeResult && typeof removeResult === 'object' && (
+        (removeResult as any).kind === "Success" || (removeResult as any).success === true
+      )) {
+        // Reload both panels to reflect changes
+        await Promise.all([
+          loadPanelData(fromPanel),
+          loadPanelData(toPanel)
+        ]);
+        
+        sdk.window.showToast(
+          `Item transferred from ${fromPanel === 1 ? 'Original' : 'Modified'} to ${toPanel === 1 ? 'Original' : 'Modified'}`, 
+          { variant: "success" }
+        );
+      } else {
+        sdk.window.showToast(`Failed to complete transfer`, { variant: "error" });
+      }
+    }
+  } catch (error) {
+    sdk.window.showToast(`Transfer failed: ${(error as Error).message}`, { variant: "error" });
+  } finally {
+    fromPanelState.loading = false;
+    toPanelState.loading = false;
+  }
+};
+
 // Enhanced compare functions for Phase 3 with proper selection validation
 const performComparison = (type: 'words' | 'bytes') => {
-  if (panel1State.value.items.length === 0 || panel2State.value.items.length === 0) {
-    sdk.window.showToast("Both panels must have data to compare", { variant: "warning" });
+  if (originalState.value.items.length === 0 || modifiedState.value.items.length === 0) {
+    sdk.window.showToast("Both Original and Modified must have data to compare", { variant: "warning" });
     return;
   }
 
   // Strict selection validation - require exactly one item selected from each panel
-  if (panel1State.value.selectedItems.length === 0) {
-    sdk.window.showToast("Please select exactly one item from Panel 1", { variant: "warning" });
+  if (originalState.value.selectedItems.length === 0) {
+    sdk.window.showToast("Please select exactly one item from Original", { variant: "warning" });
     return;
   }
 
-  if (panel2State.value.selectedItems.length === 0) {
-    sdk.window.showToast("Please select exactly one item from Panel 2", { variant: "warning" });
+  if (modifiedState.value.selectedItems.length === 0) {
+    sdk.window.showToast("Please select exactly one item from Modified", { variant: "warning" });
     return;
   }
 
-  if (panel1State.value.selectedItems.length > 1) {
-    sdk.window.showToast("Please select only one item from Panel 1 for comparison", { variant: "warning" });
+  if (originalState.value.selectedItems.length > 1) {
+    sdk.window.showToast("Please select only one item from Original for comparison", { variant: "warning" });
     return;
   }
 
-  if (panel2State.value.selectedItems.length > 1) {
-    sdk.window.showToast("Please select only one item from Panel 2 for comparison", { variant: "warning" });
+  if (modifiedState.value.selectedItems.length > 1) {
+    sdk.window.showToast("Please select only one item from Modified for comparison", { variant: "warning" });
     return;
   }
 
-  const item1 = panel1State.value.selectedItems[0]!;
-  const item2 = panel2State.value.selectedItems[0]!;
+  const item1 = originalState.value.selectedItems[0]!;
+  const item2 = modifiedState.value.selectedItems[0]!;
 
   uiState.value.comparisonInProgress = true;
 
@@ -354,18 +399,22 @@ const handleComparisonModalClose = () => {
   currentComparison.value = null;
 };
 
+const handleModalVisibilityUpdate = (value: boolean) => {
+  uiState.value.showComparisonModal = value;
+};
+
 // Tab switching
 const handleTabSwitch = (tab: string) => {
   currentTab.value = tab;
 };
 
 // Selection update handlers for components
-const updatePanel1Selection = (items: CompareItem[]) => {
-  panel1State.value.selectedItems = items;
+const updateOriginalSelection = (items: CompareItem[]) => {
+  originalState.value.selectedItems = items;
 };
 
-const updatePanel2Selection = (items: CompareItem[]) => {
-  panel2State.value.selectedItems = items;
+const updateModifiedSelection = (items: CompareItem[]) => {
+  modifiedState.value.selectedItems = items;
 };
 
 // Initialize data loading
@@ -438,35 +487,37 @@ onMounted(async () => {
       <div v-if="currentTab === 'compare'" class="h-full flex flex-col">
         <!-- Main content area - Force 50-50 layout on all screen sizes -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 min-h-0 min-w-0">
-          <!-- Panel 1 -->
+          <!-- Original -->
           <ComparePanel
             :panel-number="1"
-            :panel-state="panel1State"
+            :panel-state="originalState"
             :comparison-in-progress="uiState.comparisonInProgress"
             @paste="handlePaste"
             @load="handleLoad"
             @remove="handleRemove"
             @clear="handleClear"
-            @update:selection="updatePanel1Selection"
+            @transfer="handleTransfer"
+            @update:selection="updateOriginalSelection"
           />
 
-          <!-- Panel 2 -->
+          <!-- Modified -->
           <ComparePanel
             :panel-number="2"
-            :panel-state="panel2State"
+            :panel-state="modifiedState"
             :comparison-in-progress="uiState.comparisonInProgress"
             @paste="handlePaste"
             @load="handleLoad"
             @remove="handleRemove"
             @clear="handleClear"
-            @update:selection="updatePanel2Selection"
+            @transfer="handleTransfer"
+            @update:selection="updateModifiedSelection"
           />
         </div>
 
         <!-- Bottom Controls - Fixed at bottom -->
         <CompareControls
-          :panel1-state="panel1State"
-          :panel2-state="panel2State"
+          :panel1-state="originalState"
+          :panel2-state="modifiedState"
           :comparison-in-progress="uiState.comparisonInProgress"
           @compare-words="handleCompareWords"
           @compare-bytes="handleCompareBytes"
@@ -484,7 +535,7 @@ onMounted(async () => {
     <ComparisonModal
       :visible="uiState.showComparisonModal"
       :comparison-result="currentComparison"
-      @update:visible="(value) => uiState.showComparisonModal = value"
+      @update:visible="handleModalVisibilityUpdate"
       @close="handleComparisonModalClose"
     />
   </div>
