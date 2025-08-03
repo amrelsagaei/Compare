@@ -61,17 +61,31 @@ const handleRemove = () => emit("remove", props.panelNumber);
 const handleClear = () => emit("clear", props.panelNumber);
 
 // Context menu functionality
-const contextMenuItems = computed(() => [
-  {
-    label: `Transfer to ${props.panelNumber === 1 ? 'Modified' : 'Original'}`,
-    icon: 'fas fa-exchange-alt',
-    command: () => {
-      if (selectedItemForTransfer.value) {
-        emit("transfer", selectedItemForTransfer.value, props.panelNumber);
+const contextMenuItems = computed(() => {
+  const selectedCount = props.panelState.selectedItems.length;
+  const hasSelection = selectedCount > 0;
+  const transferLabel = hasSelection 
+    ? `Transfer ${selectedCount} item${selectedCount > 1 ? 's' : ''} to ${props.panelNumber === 1 ? 'Modified' : 'Original'}`
+    : `Transfer to ${props.panelNumber === 1 ? 'Modified' : 'Original'}`;
+
+  return [
+    {
+      label: transferLabel,
+      icon: 'fas fa-exchange-alt',
+      command: () => {
+        // If multiple items are selected, transfer all of them
+        if (hasSelection) {
+          props.panelState.selectedItems.forEach(item => {
+            emit("transfer", item, props.panelNumber);
+          });
+        } else if (selectedItemForTransfer.value) {
+          // Fallback to single item if no selection
+          emit("transfer", selectedItemForTransfer.value, props.panelNumber);
+        }
       }
     }
-  }
-]);
+  ];
+});
 
 const onRowContextMenu = (event: any) => {
   selectedItemForTransfer.value = event.data;
@@ -80,7 +94,7 @@ const onRowContextMenu = (event: any) => {
 </script>
 
 <template>
-  <Panel :header="panelTitle" class="h-full flex flex-col min-w-0">
+  <Panel :header="panelTitle" class="h-full min-w-0" :pt="{ content: { class: 'flex flex-col p-0', style: 'height: calc(85vh - 150px)' } }">
     <template #icons>
       <Badge 
         v-if="panelState.items.length > 0" 
@@ -90,7 +104,7 @@ const onRowContextMenu = (event: any) => {
     </template>
     
     <!-- Panel Controls -->
-    <Toolbar class="mb-3">
+    <Toolbar class="mb-3 flex-shrink-0">
       <template #start>
         <div class="flex gap-2">
           <Button 
@@ -132,7 +146,7 @@ const onRowContextMenu = (event: any) => {
     </Toolbar>
 
     <!-- Panel Data Table -->
-    <div class="flex-1 overflow-hidden min-w-0">
+    <div class="flex-1 min-h-0 overflow-hidden">
       <DataTable 
         :selection="selectedItems"
         @update:selection="handleSelectionUpdate"
@@ -140,7 +154,7 @@ const onRowContextMenu = (event: any) => {
         selection-mode="multiple"
         :meta-key-selection="false"
         scrollable
-        scroll-height="100%"
+        scroll-height="calc(85vh - 250px)"
         class="text-sm"
         :loading="panelState.loading"
         @row-contextmenu="onRowContextMenu"
@@ -173,7 +187,7 @@ const onRowContextMenu = (event: any) => {
             />
           </template>
         </Column>
-        <Column field="timestamp" header="Time" sortable header-style="width: 6rem">
+        <Column field="timestamp" header="Time" sortable header-style="width: 9rem">
           <template #body="{ data }">
             <span class="text-xs text-surface-600 dark:text-surface-400">
               {{ formatTimestamp(data.timestamp) }}
@@ -191,6 +205,52 @@ const onRowContextMenu = (event: any) => {
     />
   </Panel>
 </template>
+
+<style scoped>
+/* Ensure proper height constraints for scrolling */
+:deep(.p-panel-content) {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+:deep(.p-datatable-wrapper) {
+  overflow: auto !important;
+}
+
+/* Custom scrollbar for better UX */
+:deep(.p-datatable-wrapper)::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+:deep(.p-datatable-wrapper)::-webkit-scrollbar-track {
+  background: var(--surface-200);
+  border-radius: 4px;
+}
+
+:deep(.p-datatable-wrapper)::-webkit-scrollbar-thumb {
+  background: var(--surface-400);
+  border-radius: 4px;
+}
+
+:deep(.p-datatable-wrapper)::-webkit-scrollbar-thumb:hover {
+  background: var(--surface-500);
+}
+
+/* Dark mode scrollbar */
+[data-mode="dark"] :deep(.p-datatable-wrapper)::-webkit-scrollbar-track {
+  background: var(--surface-700);
+}
+
+[data-mode="dark"] :deep(.p-datatable-wrapper)::-webkit-scrollbar-thumb {
+  background: var(--surface-600);
+}
+
+[data-mode="dark"] :deep(.p-datatable-wrapper)::-webkit-scrollbar-thumb:hover {
+  background: var(--surface-500);
+}
+</style>
 
 <script lang="ts">
 export default {

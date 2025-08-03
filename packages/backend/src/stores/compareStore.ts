@@ -24,7 +24,7 @@ export class CompareStore {
   
   // Panel 1 Operations
   getPanel1Items(): CompareItem[] {
-    return [...this.panel1Items.values()].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    return [...this.panel1Items.values()].sort((a, b) => a.id - b.id);
   }
   
   getPanel1Item(id: number): CompareItem | undefined {
@@ -45,7 +45,7 @@ export class CompareStore {
   
   // Panel 2 Operations
   getPanel2Items(): CompareItem[] {
-    return [...this.panel2Items.values()].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    return [...this.panel2Items.values()].sort((a, b) => a.id - b.id);
   }
   
   getPanel2Item(id: number): CompareItem | undefined {

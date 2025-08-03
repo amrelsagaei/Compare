@@ -277,48 +277,105 @@ const handleClear = async (panelNumber: 1 | 2) => {
   }
 };
 
-// Transfer item between panels
+// Batch transfer queue to handle multiple selections efficiently
+let batchTransferQueue: CompareItem[] = [];
+let batchTransferTimeout: number | null = null;
+let currentTransferPanel: 1 | 2 | null = null;
+
+// Transfer item between panels (supports batch transfers)
 const handleTransfer = async (item: CompareItem, fromPanel: 1 | 2) => {
+  // Add item to batch queue
+  batchTransferQueue.push(item);
+  currentTransferPanel = fromPanel;
+  
+  // Clear existing timeout and set new one to batch transfers
+  if (batchTransferTimeout) {
+    clearTimeout(batchTransferTimeout);
+  }
+  
+  batchTransferTimeout = setTimeout(async () => {
+    await processBatchTransfer(currentTransferPanel!);
+  }, 100) as any; // Small delay to allow batching multiple selections
+};
+
+// Process batch transfer
+const processBatchTransfer = async (fromPanel: 1 | 2) => {
+  if (batchTransferQueue.length === 0) return;
+  
   const toPanel = fromPanel === 1 ? 2 : 1;
   const fromPanelState = fromPanel === 1 ? originalState.value : modifiedState.value;
   const toPanelState = fromPanel === 1 ? modifiedState.value : originalState.value;
+  const itemsToTransfer = [...batchTransferQueue];
+  
+  // Clear the queue
+  batchTransferQueue = [];
+  batchTransferTimeout = null;
+  currentTransferPanel = null;
   
   fromPanelState.loading = true;
   toPanelState.loading = true;
   
   try {
-    // Save item to destination panel
-    const saved = await saveItemToBackend(toPanel, item);
+    let successCount = 0;
+    let failureCount = 0;
     
-    if (saved) {
-      // Remove item from source panel
-      const removeResult = await handleApiCall(
-        (sdk.backend as any).removeItemFromPanel(fromPanel, item.id),
-        `Failed to remove item from ${fromPanel === 1 ? 'Original' : 'Modified'}`
-      );
-      
-      if (removeResult && typeof removeResult === 'object' && (
-        (removeResult as any).kind === "Success" || (removeResult as any).success === true
-      )) {
-        // Reload both panels to reflect changes
-        await Promise.all([
-          loadPanelData(fromPanel),
-          loadPanelData(toPanel)
-        ]);
+    // Process each item in the batch
+    for (const item of itemsToTransfer) {
+      try {
+        // Save item to destination panel
+        const saved = await saveItemToBackend(toPanel, item);
         
-        sdk.window.showToast(
-          `Item transferred from ${fromPanel === 1 ? 'Original' : 'Modified'} to ${toPanel === 1 ? 'Original' : 'Modified'}`, 
-          { variant: "success" }
-        );
-      } else {
-        sdk.window.showToast(`Failed to complete transfer`, { variant: "error" });
+        if (saved) {
+          // Remove item from source panel
+          const removeResult = await handleApiCall(
+            (sdk.backend as any).removeItemFromPanel(fromPanel, item.id),
+            `Failed to remove item from ${fromPanel === 1 ? 'Original' : 'Modified'}`
+          );
+          
+          if (removeResult && typeof removeResult === 'object' && (
+            (removeResult as any).kind === "Success" || (removeResult as any).success === true
+          )) {
+            successCount++;
+          } else {
+            failureCount++;
+          }
+        } else {
+          failureCount++;
+        }
+      } catch (error) {
+        failureCount++;
+        console.error(`Failed to transfer item ${item.id}:`, error);
       }
     }
+    
+    // Show appropriate success/failure message
+    if (successCount > 0) {
+      const message = itemsToTransfer.length === 1 
+        ? `Item transferred from ${fromPanel === 1 ? 'Original' : 'Modified'} to ${toPanel === 1 ? 'Original' : 'Modified'}`
+        : `${successCount} item${successCount > 1 ? 's' : ''} transferred from ${fromPanel === 1 ? 'Original' : 'Modified'} to ${toPanel === 1 ? 'Original' : 'Modified'}`;
+      
+      sdk.window.showToast(message, { variant: "success" });
+    }
+    
+    if (failureCount > 0) {
+      const message = itemsToTransfer.length === 1
+        ? 'Failed to transfer item'
+        : `${failureCount} item${failureCount > 1 ? 's' : ''} failed to transfer`;
+        
+      sdk.window.showToast(message, { variant: "error" });
+    }
+    
   } catch (error) {
-    sdk.window.showToast(`Transfer failed: ${(error as Error).message}`, { variant: "error" });
+    sdk.window.showToast(`Batch transfer failed: ${(error as Error).message}`, { variant: "error" });
   } finally {
     fromPanelState.loading = false;
     toPanelState.loading = false;
+    
+    // Reload both panels to reflect changes
+    await Promise.all([
+      loadPanelData(fromPanel),
+      loadPanelData(toPanel)
+    ]);
   }
 };
 
@@ -486,7 +543,7 @@ onMounted(async () => {
       <!-- Compare Tab -->
       <div v-if="currentTab === 'compare'" class="h-full flex flex-col">
         <!-- Main content area - Force 50-50 layout on all screen sizes -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 min-h-0 min-w-0">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 min-h-0 min-w-0 max-h-full">
           <!-- Original -->
           <ComparePanel
             :panel-number="1"
