@@ -1,7 +1,4 @@
 <div align="left">
-  <img src="banner.jpg" alt="Compare Banner" width="100%">
-
-  <p>  <br>
     <strong>A professional data comparison plugin for Caido that provides side-by-side comparison with visual difference highlighting</strong>
   </p>
   <br>
