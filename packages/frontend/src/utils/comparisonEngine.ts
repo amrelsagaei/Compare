@@ -40,7 +40,7 @@ export function compareByWords(text1: string, text2: string): { diffs1: Comparis
   while (i < words1.length || j < words2.length) {
     if (i >= words1.length) {
       // Remaining words in text2 are added
-      const word = words2[j];
+      const word = words2[j]!; // Safe: j < words2.length guaranteed by while condition
       diffs2.push({
         type: 'added',
         content: word,
@@ -51,7 +51,7 @@ export function compareByWords(text1: string, text2: string): { diffs1: Comparis
       j++;
     } else if (j >= words2.length) {
       // Remaining words in text1 are deleted
-      const word = words1[i];
+      const word = words1[i]!; // Safe: i < words1.length guaranteed by while condition
       diffs1.push({
         type: 'deleted', 
         content: word,
@@ -62,7 +62,7 @@ export function compareByWords(text1: string, text2: string): { diffs1: Comparis
       i++;
     } else if (words1[i] === words2[j]) {
       // Words match - unchanged
-      const word = words1[i];
+      const word = words1[i]!; // Safe: i < words1.length guaranteed by conditions
       diffs1.push({
         type: 'unchanged',
         content: word,
@@ -88,7 +88,7 @@ export function compareByWords(text1: string, text2: string): { diffs1: Comparis
         if (i + lookahead < words1.length && words1[i + lookahead] === words2[j]) {
           // Found match in text1 - mark intermediate words as deleted
           for (let k = 0; k < lookahead; k++) {
-            const word = words1[i + k];
+            const word = words1[i + k]!; // Safe: i + k < i + lookahead < words1.length
             diffs1.push({
               type: 'deleted',
               content: word,
@@ -103,7 +103,7 @@ export function compareByWords(text1: string, text2: string): { diffs1: Comparis
         } else if (j + lookahead < words2.length && words1[i] === words2[j + lookahead]) {
           // Found match in text2 - mark intermediate words as added
           for (let k = 0; k < lookahead; k++) {
-            const word = words2[j + k];
+            const word = words2[j + k]!; // Safe: j + k < j + lookahead < words2.length
             diffs2.push({
               type: 'added',
               content: word,
@@ -120,8 +120,8 @@ export function compareByWords(text1: string, text2: string): { diffs1: Comparis
       
       if (!found) {
         // No match found - mark as modified
-        const word1 = words1[i];
-        const word2 = words2[j];
+        const word1 = words1[i]!; // Safe: i < words1.length guaranteed by conditions
+        const word2 = words2[j]!; // Safe: j < words2.length guaranteed by conditions
         
         diffs1.push({
           type: 'modified',
@@ -250,13 +250,13 @@ export function compareByBytes(text1: string, text2: string): { diffs1: Comparis
         // No nearby match - mark as modified (single character)
         diffs1.push({
           type: 'modified',
-          content: text1[i],
+          content: text1[i]!,  // Safe: i < text1.length guaranteed by while condition
           position: i,
           length: 1
         });
         diffs2.push({
           type: 'modified',
-          content: text2[j],
+          content: text2[j]!,  // Safe: j < text2.length guaranteed by while condition
           position: j,
           length: 1
         });
