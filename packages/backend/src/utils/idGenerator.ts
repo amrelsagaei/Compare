@@ -1,4 +1,3 @@
-import { SDK } from "caido:plugin";
 import { CompareStore } from "../stores/compareStore";
 
 /**
