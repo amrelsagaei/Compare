@@ -1,22 +1,13 @@
-<div align="left">
-    <strong>A professional data comparison plugin for Caido that provides side-by-side comparison with visual difference highlighting</strong>
-  </p>
-  <br>
-</div>
-
----
-
+<h1>Caido Compare</h1>
+<strong>A professional data comparison plugin for Caido that provides side-by-side comparison with visual difference highlighting</strong><br><br>
 <details closed>
 <summary><b>Table of Contents</b></summary>
-<br>
-
+    
 - [Overview](#overview)
 - [Features](#features)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
-- [HTTP History Integration](#http-history-integration)
 - [Documentation](#documentation)
-- [Updates](#updates)
 - [Feedback & Issues](#feedback--issues)
 - [License](#license)
 </details>
