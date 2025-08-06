@@ -158,7 +158,6 @@ export function compareByBytes(text1: string, text2: string): { diffs1: Comparis
   
   while (i < text1.length || j < text2.length) {
     if (i >= text1.length) {
-      // Remaining characters in text2 are added
       let addedChars = '';
       let startPos = j;
       while (j < text2.length) {
@@ -174,7 +173,6 @@ export function compareByBytes(text1: string, text2: string): { diffs1: Comparis
         });
       }
     } else if (j >= text2.length) {
-      // Remaining characters in text1 are deleted
       let deletedChars = '';
       let startPos = i;
       while (i < text1.length) {
@@ -190,7 +188,6 @@ export function compareByBytes(text1: string, text2: string): { diffs1: Comparis
         });
       }
     } else if (text1[i] === text2[j]) {
-      // Characters match - group consecutive unchanged characters
       let unchangedChars = '';
       let startPos1 = i;
       let startPos2 = j;
@@ -214,55 +211,30 @@ export function compareByBytes(text1: string, text2: string): { diffs1: Comparis
         length: unchangedChars.length
       });
     } else {
-      // Characters differ - look for next match within reasonable distance
-      let matchFound = false;
-      const maxLookahead = 10;
+      let modifiedChars1 = '';
+      let modifiedChars2 = '';
+      let startPos1 = i;
+      let startPos2 = j;
       
-      for (let lookahead = 1; lookahead <= maxLookahead; lookahead++) {
-        if (i + lookahead < text1.length && text1[i + lookahead] === text2[j]) {
-          // Found match ahead in text1 - mark skipped chars as deleted
-          const deletedChars = text1.substring(i, i + lookahead);
-          diffs1.push({
-            type: 'deleted',
-            content: deletedChars,
-            position: i,
-            length: deletedChars.length
-          });
-          i += lookahead;
-          matchFound = true;
-          break;
-        } else if (j + lookahead < text2.length && text1[i] === text2[j + lookahead]) {
-          // Found match ahead in text2 - mark skipped chars as added
-          const addedChars = text2.substring(j, j + lookahead);
-          diffs2.push({
-            type: 'added',
-            content: addedChars,
-            position: j,
-            length: addedChars.length
-          });
-          j += lookahead;
-          matchFound = true;
-          break;
-        }
-      }
-      
-      if (!matchFound) {
-        // No nearby match - mark as modified (single character)
-        diffs1.push({
-          type: 'modified',
-          content: text1[i]!,  // Safe: i < text1.length guaranteed by while condition
-          position: i,
-          length: 1
-        });
-        diffs2.push({
-          type: 'modified',
-          content: text2[j]!,  // Safe: j < text2.length guaranteed by while condition
-          position: j,
-          length: 1
-        });
+      while (i < text1.length && j < text2.length && text1[i] !== text2[j]) {
+        modifiedChars1 += text1[i];
+        modifiedChars2 += text2[j];
         i++;
         j++;
       }
+      
+      diffs1.push({
+        type: 'modified',
+        content: modifiedChars1,
+        position: startPos1,
+        length: modifiedChars1.length
+      });
+      diffs2.push({
+        type: 'modified',
+        content: modifiedChars2,
+        position: startPos2,
+        length: modifiedChars2.length
+      });
     }
   }
   
