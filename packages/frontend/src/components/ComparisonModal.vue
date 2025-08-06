@@ -4,7 +4,7 @@ import Dialog from 'primevue/dialog';
 import Checkbox from 'primevue/checkbox';
 import Badge from 'primevue/badge';
 
-import { ComparisonResult, ComparisonDiff } from '../utils/comparisonEngine';
+import { ComparisonResult, ComparisonDiff, generateComparisonStats } from '../utils/comparisonEngine';
 
 // Props
 interface Props {
@@ -34,24 +34,12 @@ const isVisible = computed({
 const comparisonStats = computed(() => {
   if (!props.comparisonResult) return null;
   
-  const stats = {
-    unchanged: 0,
-    modified: 0, 
-    added: 0,
-    deleted: 0
-  };
-  
-  props.comparisonResult.diffs1.forEach(diff => {
-    stats[diff.type]++;
-  });
-  
-  props.comparisonResult.diffs2.forEach(diff => {
-    if (diff.type === 'added') {
-      stats.added++;
-    }
-  });
-  
-  return stats;
+  // Use the fixed stats function with the comparison type
+  return generateComparisonStats(
+    props.comparisonResult.diffs1, 
+    props.comparisonResult.diffs2, 
+    props.comparisonResult.type
+  );
 });
 
 // Methods

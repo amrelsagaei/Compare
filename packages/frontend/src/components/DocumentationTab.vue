@@ -255,7 +255,7 @@ export default {
         <div class="flex items-center justify-between mb-6">
           <div>
             <h3 class="text-2xl font-bold text-surface-100 dark:text-surface-100">Compare</h3>
-            <p class="text-sm text-surface-300 dark:text-surface-300">Version 1.0.0</p>
+            <p class="text-sm text-surface-300 dark:text-surface-300">Version 1.0.1</p>
           </div>
           <button
             @click="copyToClipboard('https://github.com/amrelsagaei/compare', 'github')"

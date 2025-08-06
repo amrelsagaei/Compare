@@ -272,7 +272,7 @@ export function compareByBytes(text1: string, text2: string): { diffs1: Comparis
 /**
  * Generate comparison statistics
  */
-export function generateComparisonStats(diffs1: ComparisonDiff[], diffs2: ComparisonDiff[]) {
+export function generateComparisonStats(diffs1: ComparisonDiff[], diffs2: ComparisonDiff[], comparisonType: 'words' | 'bytes' = 'words') {
   const stats = {
     unchanged: 0,
     modified: 0,
@@ -282,15 +282,29 @@ export function generateComparisonStats(diffs1: ComparisonDiff[], diffs2: Compar
     total2: diffs2.length
   };
   
-  diffs1.forEach(diff => {
-    stats[diff.type]++;
-  });
-  
-  diffs2.forEach(diff => {
-    if (diff.type === 'added') {
-      stats.added++;
-    }
-  });
+  if (comparisonType === 'words') {
+    // For words: count chunks (existing behavior)
+    diffs1.forEach(diff => {
+      stats[diff.type]++;
+    });
+    
+    diffs2.forEach(diff => {
+      if (diff.type === 'added') {
+        stats.added++;
+      }
+    });
+  } else {
+    // For bytes: count character lengths
+    diffs1.forEach(diff => {
+      stats[diff.type] += diff.length;
+    });
+    
+    diffs2.forEach(diff => {
+      if (diff.type === 'added') {
+        stats.added += diff.length;
+      }
+    });
+  }
   
   return stats;
 }
