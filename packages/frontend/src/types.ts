@@ -9,13 +9,13 @@ export interface CompareItem {
   data: string;
   preview: string;
   timestamp: Date;
-  type: 'request' | 'response' | 'file' | 'clipboard';
+  type: "request" | "response" | "file" | "clipboard";
   source?: string;
   metadata?: Record<string, any>;
 }
 
 export interface ComparisonResult {
-  type: 'words' | 'bytes' | 'characters';
+  type: "words" | "bytes" | "characters";
   differences: ComparisonDifference[];
   summary: {
     added: number;
@@ -26,7 +26,7 @@ export interface ComparisonResult {
 }
 
 export interface ComparisonDifference {
-  type: 'added' | 'deleted' | 'modified';
+  type: "added" | "deleted" | "modified";
   position: number;
   length: number;
   content: string;
@@ -89,11 +89,25 @@ export interface CompareEmits {
 
 // API call types for better type safety
 export interface BackendAPI {
-  saveItemToPanel(panelNumber: 1 | 2, data: string, type: CompareItem['type'], source?: string, metadata?: Record<string, any>): Promise<CompareStorageResult<CompareItem>>;
-  loadPanelData(panelNumber: 1 | 2): Promise<CompareStorageResult<PanelDataResponse>>;
-  removeItemFromPanel(panelNumber: 1 | 2, itemId: number): Promise<CompareStorageResult<void>>;
+  saveItemToPanel(
+    panelNumber: 1 | 2,
+    data: string,
+    type: CompareItem["type"],
+    source?: string,
+    metadata?: Record<string, any>,
+  ): Promise<CompareStorageResult<CompareItem>>;
+  loadPanelData(
+    panelNumber: 1 | 2,
+  ): Promise<CompareStorageResult<PanelDataResponse>>;
+  removeItemFromPanel(
+    panelNumber: 1 | 2,
+    itemId: number,
+  ): Promise<CompareStorageResult<void>>;
   clearPanelData(panelNumber: 1 | 2): Promise<CompareStorageResult<void>>;
-  processFileUpload(fileContent: string, filename?: string): Promise<FileUploadResult>;
+  processFileUpload(
+    fileContent: string,
+    filename?: string,
+  ): Promise<FileUploadResult>;
   processClipboardData(clipboardContent: string): Promise<FileUploadResult>;
   processHttpRequest(requestData: any): Promise<FileUploadResult>;
   processHttpResponse(responseData: any): Promise<FileUploadResult>;

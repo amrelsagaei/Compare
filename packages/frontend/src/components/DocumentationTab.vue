@@ -3,12 +3,11 @@ import Card from "primevue/card";
 import { onMounted, onUnmounted, ref } from "vue";
 
 interface Emits {
-  (e: 'switch-tab', tab: string): void;
+  (e: "switch-tab", tab: string): void;
 }
 
 const emit = defineEmits<Emits>();
 
-// Sidebar sections
 const sections = [
   { id: "what-is-compare", title: "What is Compare?" },
   { id: "quick-start", title: "Quick Start" },
@@ -64,13 +63,12 @@ const isSectionActive = (sectionId: string) => {
 
 <script lang="ts">
 export default {
-  name: 'DocumentationTab'
+  name: "DocumentationTab",
 };
 </script>
 
 <template>
   <div class="h-full flex gap-1">
-    <!-- Sidebar Navigation -->
     <Card
       class="h-full w-[200px]"
       :pt="{
@@ -99,7 +97,6 @@ export default {
       </template>
     </Card>
 
-    <!-- Main Content -->
     <Card
       class="h-full flex-1"
       :pt="{
@@ -110,22 +107,20 @@ export default {
       <template #content>
         <div ref="contentRef" class="h-full overflow-auto p-4">
           <div class="max-w-3xl space-y-12 pb-[36rem]">
-            <!-- What is Compare? -->
             <section id="what-is-compare">
               <h2 class="text-2xl font-semibold mb-4">What is Compare?</h2>
               <p class="text-surface-300 leading-relaxed mb-4">
-                Compare is a plugin for Caido that helps security professionals perform 
-                side-by-side comparison of HTTP requests, responses, and files with 
-                visual difference highlighting.
+                Compare is a plugin for Caido that helps security professionals
+                perform side-by-side comparison of HTTP requests, responses, and
+                files with visual difference highlighting.
               </p>
               <p class="text-surface-300 leading-relaxed">
-                Think of it as a dedicated diff tool built into Caido: load two pieces 
-                of data, compare them by words or bytes, and instantly see what's 
-                different with color-coded highlighting.
+                Think of it as a dedicated diff tool built into Caido: load two
+                pieces of data, compare them by words or bytes, and instantly
+                see what's different with color-coded highlighting.
               </p>
             </section>
 
-            <!-- Quick Start -->
             <section id="quick-start">
               <h2 class="text-2xl font-semibold mb-4">Quick Start</h2>
               <p class="text-surface-300 leading-relaxed mb-6">
@@ -134,48 +129,53 @@ export default {
 
               <div class="space-y-4">
                 <div class="border border-surface-700 rounded p-4">
-                  <h3 class="text-lg font-semibold mb-3">1. Add Data to Original</h3>
+                  <h3 class="text-lg font-semibold mb-3">
+                    1. Add Data to Original
+                  </h3>
                   <p class="text-surface-300 leading-relaxed">
-                    Paste content, load a file, or right-click a request in HTTP History 
-                    and select "Send to Original".
+                    Paste content, load a file, or right-click a request in HTTP
+                    History and select "Send to Original".
                   </p>
                 </div>
 
                 <div class="border border-surface-700 rounded p-4">
-                  <h3 class="text-lg font-semibold mb-3">2. Add Data to Modified</h3>
+                  <h3 class="text-lg font-semibold mb-3">
+                    2. Add Data to Modified
+                  </h3>
                   <p class="text-surface-300 leading-relaxed">
-                    Add the second piece of content you want to compare using the same 
-                    methods - paste, file, or from HTTP History.
+                    Add the second piece of content you want to compare using
+                    the same methods - paste, file, or from HTTP History.
                   </p>
                 </div>
 
                 <div class="border border-surface-700 rounded p-4">
                   <h3 class="text-lg font-semibold mb-3">3. Select Items</h3>
                   <p class="text-surface-300 leading-relaxed">
-                    Click on one item in the Original panel and one item in the Modified 
-                    panel to select them for comparison.
+                    Click on one item in the Original panel and one item in the
+                    Modified panel to select them for comparison.
                   </p>
                 </div>
 
                 <div class="border border-surface-700 rounded p-4">
                   <h3 class="text-lg font-semibold mb-3">4. Compare</h3>
                   <p class="text-surface-300 leading-relaxed">
-                    Click "Compare Words" for text comparison or "Compare Bytes" for 
-                    character-by-character analysis.
+                    Click "Compare Words" for text comparison or "Compare Bytes"
+                    for character-by-character analysis.
                   </p>
                 </div>
               </div>
 
-              <div class="mt-6 bg-surface-800 border border-surface-700 rounded p-4">
+              <div
+                class="mt-6 bg-surface-800 border border-surface-700 rounded p-4"
+              >
                 <p class="text-surface-300 text-sm">
                   <i class="fas fa-rocket text-blue-400 mr-2"></i>
-                  That's it! The comparison modal will show color-coded differences 
-                  between your two selections.
+                  That's it! The comparison modal will show color-coded
+                  differences between your two selections.
                 </p>
               </div>
             </section>
 
-            <!-- Data Input Methods -->
             <section id="data-input">
               <h2 class="text-2xl font-semibold mb-4">Data Input Methods</h2>
               <p class="text-surface-300 leading-relaxed mb-6">
@@ -184,27 +184,33 @@ export default {
 
               <div class="space-y-6">
                 <div>
-                  <h3 class="text-lg font-semibold mb-3">1. Paste from Clipboard</h3>
+                  <h3 class="text-lg font-semibold mb-3">
+                    1. Paste from Clipboard
+                  </h3>
                   <p class="text-surface-300 leading-relaxed">
-                    Copy any text to your clipboard and click the "Paste" button. 
-                    The content will be added as a clipboard item.
+                    Copy any text to your clipboard and click the "Paste"
+                    button. The content will be added as a clipboard item.
                   </p>
                 </div>
 
                 <div>
                   <h3 class="text-lg font-semibold mb-3">2. Load from File</h3>
                   <p class="text-surface-300 leading-relaxed">
-                    Click "Load" to open a file picker. Select any text file 
-                    (up to 10MB) to add it to the panel.
+                    Click "Load" to open a file picker. Select any text file (up
+                    to 10MB) to add it to the panel.
                   </p>
                 </div>
 
                 <div>
-                  <h3 class="text-lg font-semibold mb-3">3. Send from HTTP History</h3>
+                  <h3 class="text-lg font-semibold mb-3">
+                    3. Send from HTTP History
+                  </h3>
                   <p class="text-surface-300 leading-relaxed mb-3">
                     Right-click any request in Caido's HTTP History:
                   </p>
-                  <ol class="list-decimal list-inside space-y-2 text-surface-300 ml-4">
+                  <ol
+                    class="list-decimal list-inside space-y-2 text-surface-300 ml-4"
+                  >
                     <li>Select "Send to Original" to add to the left panel</li>
                     <li>Select "Send to Modified" to add to the right panel</li>
                     <li>You can select multiple requests (up to 25)</li>
@@ -213,7 +219,6 @@ export default {
               </div>
             </section>
 
-            <!-- Comparison Types -->
             <section id="comparison-types">
               <h2 class="text-2xl font-semibold mb-4">Comparison Types</h2>
               <p class="text-surface-300 leading-relaxed mb-6">
@@ -226,13 +231,13 @@ export default {
                     Word-Level Comparison
                   </h3>
                   <p class="text-surface-300 leading-relaxed mb-3">
-                    Best for comparing HTTP requests, responses, and text content. 
-                    Uses intelligent word-boundary detection to highlight meaningful 
-                    differences.
+                    Best for comparing HTTP requests, responses, and text
+                    content. Uses intelligent word-boundary detection to
+                    highlight meaningful differences.
                   </p>
                   <p class="text-surface-300 text-sm">
-                    <strong>Use when:</strong> Comparing API responses, HTML content, 
-                    configuration files, or any structured text.
+                    <strong>Use when:</strong> Comparing API responses, HTML
+                    content, configuration files, or any structured text.
                   </p>
                 </div>
 
@@ -241,17 +246,20 @@ export default {
                     Byte-Level Comparison
                   </h3>
                   <p class="text-surface-300 leading-relaxed mb-3">
-                    Character-by-character analysis for precise difference detection. 
-                    Shows every single character change.
+                    Character-by-character analysis for precise difference
+                    detection. Shows every single character change.
                   </p>
                   <p class="text-surface-300 text-sm">
-                    <strong>Use when:</strong> Comparing encoded content, binary-like 
-                    data, or when you need exact character differences.
+                    <strong>Use when:</strong> Comparing encoded content,
+                    binary-like data, or when you need exact character
+                    differences.
                   </p>
                 </div>
               </div>
 
-              <div class="mt-6 bg-surface-800 border border-surface-700 rounded p-4">
+              <div
+                class="mt-6 bg-surface-800 border border-surface-700 rounded p-4"
+              >
                 <p class="text-surface-300 text-sm">
                   <i class="fas fa-palette text-blue-400 mr-2"></i>
                   <strong>Color coding:</strong>
@@ -261,7 +269,6 @@ export default {
               </div>
             </section>
 
-            <!-- Panel Management -->
             <section id="panel-management">
               <h2 class="text-2xl font-semibold mb-4">Panel Management</h2>
               <p class="text-surface-300 leading-relaxed mb-6">
@@ -272,7 +279,8 @@ export default {
                 <div class="border-l-4 border-blue-500 pl-4">
                   <h4 class="font-semibold mb-1">Remove</h4>
                   <p class="text-surface-300 text-sm">
-                    Select items and click "Remove" to delete them from the panel.
+                    Select items and click "Remove" to delete them from the
+                    panel.
                   </p>
                 </div>
                 <div class="border-l-4 border-blue-500 pl-4">
@@ -284,38 +292,45 @@ export default {
                 <div class="border-l-4 border-blue-500 pl-4">
                   <h4 class="font-semibold mb-1">Transfer</h4>
                   <p class="text-surface-300 text-sm">
-                    Right-click any item and select "Transfer" to move it to the 
+                    Right-click any item and select "Transfer" to move it to the
                     other panel. Works with multiple selected items.
                   </p>
                 </div>
                 <div class="border-l-4 border-blue-500 pl-4">
                   <h4 class="font-semibold mb-1">Multi-Select</h4>
                   <p class="text-surface-300 text-sm">
-                    Click checkboxes to select multiple items for bulk operations.
+                    Click checkboxes to select multiple items for bulk
+                    operations.
                   </p>
                 </div>
               </div>
 
-              <div class="mt-6 bg-surface-800 border border-surface-700 rounded p-4">
+              <div
+                class="mt-6 bg-surface-800 border border-surface-700 rounded p-4"
+              >
                 <p class="text-surface-300 text-sm">
                   <i class="fas fa-info-circle text-blue-400 mr-2"></i>
-                  Data automatically persists per project. Switch projects and your 
-                  Compare data stays organized.
+                  Data automatically persists per project. Switch projects and
+                  your Compare data stays organized.
                 </p>
               </div>
             </section>
 
-            <!-- HTTP History Integration -->
             <section id="http-history">
-              <h2 class="text-2xl font-semibold mb-4">HTTP History Integration</h2>
+              <h2 class="text-2xl font-semibold mb-4">
+                HTTP History Integration
+              </h2>
               <p class="text-surface-300 leading-relaxed mb-6">
-                Compare integrates directly with Caido's HTTP History for quick access:
+                Compare integrates directly with Caido's HTTP History for quick
+                access:
               </p>
 
               <div class="space-y-4">
                 <div class="border border-surface-700 rounded p-4">
                   <h4 class="font-semibold mb-3">Individual Requests</h4>
-                  <ol class="list-decimal list-inside space-y-2 text-surface-300">
+                  <ol
+                    class="list-decimal list-inside space-y-2 text-surface-300"
+                  >
                     <li>Right-click any request in HTTP History</li>
                     <li>Select "Send to Original" or "Send to Modified"</li>
                     <li>Request data appears automatically in Compare</li>
@@ -324,21 +339,25 @@ export default {
 
                 <div class="border border-surface-700 rounded p-4">
                   <h4 class="font-semibold mb-3">Bulk Operations</h4>
-                  <ol class="list-decimal list-inside space-y-2 text-surface-300">
+                  <ol
+                    class="list-decimal list-inside space-y-2 text-surface-300"
+                  >
                     <li>Select multiple requests (up to 25)</li>
-                    <li>Right-click → "Send to Original" or "Send to Modified"</li>
+                    <li>
+                      Right-click → "Send to Original" or "Send to Modified"
+                    </li>
                     <li>All requests are processed automatically</li>
                   </ol>
                 </div>
               </div>
             </section>
 
-            <!-- About -->
             <section id="about">
               <h2 class="text-2xl font-semibold mb-4">About</h2>
               <p class="text-surface-300 leading-relaxed mb-6">
-                Compare is a professional Caido plugin for security professionals 
-                who need precise side-by-side comparison capabilities.
+                Compare is a professional Caido plugin for security
+                professionals who need precise side-by-side comparison
+                capabilities.
               </p>
 
               <div class="border border-surface-700 rounded p-4">
@@ -350,13 +369,15 @@ export default {
                 </div>
 
                 <div class="pt-4 border-t border-surface-700">
-                  <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                  <div
+                    class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between"
+                  >
                     <div class="text-sm text-surface-300">
                       <span class="font-medium">Made with</span>
                       <i class="fas fa-heart text-red-500 mx-1"></i>
                       <span class="font-medium">by</span>
-                      <a 
-                        href="https://amrelsagaei.com" 
+                      <a
+                        href="https://amrelsagaei.com"
                         target="_blank"
                         class="font-medium text-primary-400 hover:text-primary-300 transition-colors ml-1"
                       >
@@ -364,14 +385,14 @@ export default {
                       </a>
                     </div>
                     <div class="flex gap-4">
-                      <a 
+                      <a
                         href="mailto:info@amrelsagaei.com"
                         class="text-sm text-primary-400 hover:text-primary-300 transition-colors flex items-center gap-1"
                       >
                         <i class="fas fa-envelope"></i>
                         Email
                       </a>
-                      <a 
+                      <a
                         href="https://www.linkedin.com/in/amrelsagaei"
                         target="_blank"
                         class="text-sm text-primary-400 hover:text-primary-300 transition-colors flex items-center gap-1"
@@ -379,7 +400,7 @@ export default {
                         <i class="fab fa-linkedin"></i>
                         LinkedIn
                       </a>
-                      <a 
+                      <a
                         href="https://x.com/amrelsagaei"
                         target="_blank"
                         class="text-sm text-primary-400 hover:text-primary-300 transition-colors flex items-center gap-1"
