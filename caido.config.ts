@@ -6,14 +6,12 @@ import tailwindPrimeui from "tailwindcss-primeui";
 import tailwindCaido from "@caido/tailwindcss";
 import prefixwrap from "postcss-prefixwrap";
 
-// Use relative path for project structure
-
 const id = "compare";
 export default defineConfig({
   id,
   name: "Compare",
   description: "Side-by-side comparison of HTTP requests, responses, and files with visual difference highlighting",
-  version: "1.0.1",
+  version: "1.0.2",
   author: {
     name: "Amr Elsagaei",
     email: "info@amrelsagaei.com",
