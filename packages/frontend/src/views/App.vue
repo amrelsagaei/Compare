@@ -532,7 +532,7 @@ onMounted(async () => {
 
 <template>
   <div class="h-full flex flex-col gap-1">
-    <!-- Header (Autorize-style MenuBar) -->
+    <!-- Header -->
     <CompareHeader 
       :current-tab="currentTab"
       @switch-tab="handleTabSwitch" 
@@ -542,9 +542,9 @@ onMounted(async () => {
     <div class="flex-1 min-h-0">
       <!-- Compare Tab -->
       <div v-if="currentTab === 'compare'" class="h-full flex flex-col gap-1.5">
-        <!-- Main content area - 50-50 horizontal layout -->
+        <!-- Main content area -->
         <div class="flex-1 min-h-0 flex gap-1.5">
-          <!-- Original Panel - 50% width -->
+          <!-- Original Panel -->
           <div class="w-1/2 min-w-0 h-full">
             <ComparePanel
               :panel-number="1"
@@ -559,7 +559,7 @@ onMounted(async () => {
             />
           </div>
 
-          <!-- Modified Panel - 50% width -->
+          <!-- Modified Panel -->
           <div class="w-1/2 min-w-0 h-full">
             <ComparePanel
               :panel-number="2"
@@ -575,7 +575,7 @@ onMounted(async () => {
           </div>
         </div>
 
-        <!-- Bottom Controls - Fixed at bottom -->
+        <!-- Bottom Controls -->
         <CompareControls
           :panel1-state="originalState"
           :panel2-state="modifiedState"
