@@ -4,7 +4,7 @@
 
 /* Compare Plugin Specific Styles */
 
-/* Custom scrollbar for comparison tables */
+
 .p-datatable-wrapper::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -24,7 +24,6 @@
   background: hsl(var(--c-surface-500));
 }
 
-/* Enhanced table styling for better readability */
 .p-datatable .p-datatable-thead>tr>th {
   @apply font-semibold text-xs uppercase tracking-wider;
   border-bottom: 2px solid hsl(var(--c-surface-300));
@@ -45,7 +44,7 @@
   background-color: hsl(var(--c-surface-800)) !important;
 }
 
-/* Selection styling */
+
 .p-datatable .p-datatable-tbody>tr.p-datatable-row-selected {
   background-color: hsl(var(--c-primary-100)) !important;
 }
@@ -54,7 +53,6 @@
   background-color: hsl(var(--c-primary-900)) !important;
 }
 
-/* Panel header styling */
 .p-panel .p-panel-header {
   @apply font-semibold;
   background: hsl(var(--c-surface-100));
@@ -65,13 +63,11 @@
   background: hsl(var(--c-surface-800));
 }
 
-/* Button enhancements */
 .p-button.p-button-sm {
   @apply font-medium;
   min-height: 2rem;
 }
 
-/* Toolbar styling */
 .p-toolbar {
   background: hsl(var(--c-surface-50));
   border: 1px solid hsl(var(--c-surface-200));
@@ -83,32 +79,26 @@
   border-color: hsl(var(--c-surface-700));
 }
 
-/* Badge styling for data types - CUBE design with dark colors */
 .p-badge {
   @apply font-medium text-xs;
   min-width: 3rem;
   text-align: center;
   border-radius: 2px !important;
-  /* CUBE - small corner radius */
   padding: 0.25rem 0.5rem !important;
 }
 
-/* Panel count badges - cube style */
 .p-panel .p-badge {
   border-radius: 2px !important;
 }
 
-/* Modal badges - cube style */
 .comparison-modal .p-badge {
   border-radius: 2px !important;
 }
 
-/* Table type badges - cube style */
 .type-badge {
   border-radius: 2px !important;
 }
 
-/* VERY DISTINCT colors for each data type - Centered text */
 .p-badge[data-type="clipboard"],
 [data-type="clipboard"] {
   background: #000000 !important;
@@ -140,7 +130,7 @@
 .p-badge[data-type="request"],
 [data-type="request"] {
   background: #059669 !important;
-  /* Emerald green for requests */
+  background: #059669 !important;
   color: #ffffff !important;
   border-color: #10b981;
   font-weight: 700 !important;
@@ -166,7 +156,6 @@
   justify-content: center !important;
 }
 
-/* Dark mode - maintain distinct colors but even more contrast */
 [data-mode="dark"] .p-badge[data-type="clipboard"] {
   background: #000000 !important;
   color: #ffffff !important;
@@ -181,7 +170,7 @@
 
 [data-mode="dark"] .p-badge[data-type="request"] {
   background: #047857 !important;
-  /* Brighter green in dark mode */
+  background: #047857 !important;
   color: #ffffff !important;
   border-color: #10b981;
 }
@@ -192,7 +181,7 @@
   border-color: #f87171;
 }
 
-/* Responsive grid adjustments */
+
 @media (max-width: 1024px) {
   .grid.grid-cols-1.lg\:grid-cols-2 {
     grid-template-columns: 1fr;
@@ -205,32 +194,27 @@
   }
 }
 
-/* Loading and disabled states */
 .p-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-/* Focus states for accessibility */
 .p-button:focus,
 .p-datatable .p-datatable-tbody>tr:focus {
   outline: 2px solid hsl(var(--c-primary-600));
   outline-offset: 2px;
 }
 
-/* Animation for smooth transitions */
 .p-panel,
 .p-datatable,
 .p-button {
   transition: all 0.2s ease-in-out;
 }
 
-/* Header icon styling */
 .fas.fa-columns {
   color: hsl(var(--c-primary-600));
 }
 
-/* Divider styling */
 .p-divider {
   margin: 1rem 0;
   border-top: 1px solid hsl(var(--c-surface-300));
