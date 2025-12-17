@@ -6,11 +6,11 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'switch-tab', tab: string): void;
+  (e: "switch-tab", tab: string): void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  currentTab: 'compare'
+withDefaults(defineProps<Props>(), {
+  currentTab: "compare",
 });
 
 const emit = defineEmits<Emits>();
@@ -19,13 +19,13 @@ const items = [
   {
     label: "Compare",
     command: () => {
-      emit('switch-tab', 'compare');
+      emit("switch-tab", "compare");
     },
   },
   {
     label: "Docs",
     command: () => {
-      emit('switch-tab', 'docs');
+      emit("switch-tab", "docs");
     },
   },
 ];
@@ -33,7 +33,7 @@ const items = [
 
 <script lang="ts">
 export default {
-  name: 'CompareHeader'
+  name: "CompareHeader",
 };
 </script>
 
