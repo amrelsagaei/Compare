@@ -4,7 +4,6 @@ import Button from "primevue/button";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Toolbar from "primevue/toolbar";
-import Panel from "primevue/panel";
 import Badge from "primevue/badge";
 import ContextMenu from "primevue/contextmenu";
 import type { CompareItem, PanelState } from "../types";
@@ -94,17 +93,16 @@ const onRowContextMenu = (event: any) => {
 </script>
 
 <template>
-  <Panel :header="panelTitle" class="h-full min-w-0" :pt="{ content: { class: 'flex flex-col p-0', style: 'height: calc(85vh - 150px)' } }">
-    <template #icons>
-      <Badge 
-        v-if="panelState.items.length > 0" 
-        :value="panelState.items.length" 
-        class="ml-2" 
-      />
-    </template>
+  <div class="h-full flex flex-col bg-surface-50 dark:bg-surface-900 rounded-md border border-surface-200 dark:border-surface-700 overflow-hidden">
+    <!-- Panel Header -->
+    <div class="flex items-center justify-between px-3 py-2 bg-surface-100 dark:bg-surface-800 border-b border-surface-200 dark:border-surface-700 flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="font-semibold text-surface-800 dark:text-white">{{ panelTitle }}</span>
+      </div>
+    </div>
     
     <!-- Panel Controls -->
-    <Toolbar class="mb-3 flex-shrink-0">
+    <Toolbar class="flex-shrink-0 border-b border-surface-200 dark:border-surface-700">
       <template #start>
         <div class="flex gap-2">
           <Button 
@@ -154,14 +152,27 @@ const onRowContextMenu = (event: any) => {
         selection-mode="multiple"
         :meta-key-selection="false"
         scrollable
-        scroll-height="calc(85vh - 250px)"
-        class="text-sm"
+        scroll-height="flex"
+        class="text-sm h-full"
         :loading="panelState.loading"
         @row-contextmenu="onRowContextMenu"
+        removable-sort
         :pt="{
+          root: { class: 'h-full flex flex-col' },
+          wrapper: { class: 'flex-1 min-h-0' },
           table: { class: 'min-w-full' },
           thead: { class: 'bg-surface-100 dark:bg-surface-800' },
-          tbody: { class: 'bg-white dark:bg-surface-900' }
+          tbody: { class: 'bg-white dark:bg-surface-900' },
+          bodyRow: ({ context }: any) => ({
+            class: [
+              'cursor-pointer',
+              context.selected 
+                ? 'bg-surface-700 dark:bg-surface-700' 
+                : context.index % 2 === 0 
+                  ? 'bg-surface-800 dark:bg-surface-800' 
+                  : 'bg-surface-900 dark:bg-surface-900'
+            ].join(' ')
+          })
         }"
       >
         <Column selection-mode="multiple" header-style="width: 3rem" />
@@ -189,7 +200,7 @@ const onRowContextMenu = (event: any) => {
         </Column>
         <Column field="timestamp" header="Time" sortable header-style="width: 9rem">
           <template #body="{ data }">
-            <span class="text-xs text-surface-600 dark:text-surface-400">
+            <span class="text-xs text-surface-400 dark:text-surface-300">
               {{ formatTimestamp(data.timestamp) }}
             </span>
           </template>
@@ -203,22 +214,22 @@ const onRowContextMenu = (event: any) => {
       :model="contextMenuItems" 
       class="text-sm"
     />
-  </Panel>
+  </div>
 </template>
 
 <style scoped>
-/* Ensure proper height constraints for scrolling */
-:deep(.p-panel-content) {
-  padding: 1rem;
+:deep(.p-datatable) {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 :deep(.p-datatable-wrapper) {
+  flex: 1;
+  min-height: 0;
   overflow: auto !important;
 }
 
-/* Custom scrollbar for better UX */
 :deep(.p-datatable-wrapper)::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -238,7 +249,6 @@ const onRowContextMenu = (event: any) => {
   background: var(--surface-500);
 }
 
-/* Dark mode scrollbar */
 [data-mode="dark"] :deep(.p-datatable-wrapper)::-webkit-scrollbar-track {
   background: var(--surface-700);
 }
@@ -249,6 +259,21 @@ const onRowContextMenu = (event: any) => {
 
 [data-mode="dark"] :deep(.p-datatable-wrapper)::-webkit-scrollbar-thumb:hover {
   background: var(--surface-500);
+}
+
+:deep(.p-datatable-tbody > tr.p-datatable-row-selected),
+:deep(.p-datatable-tbody > tr.p-highlight) {
+  background-color: #3f3f46 !important;
+}
+
+:deep(.p-datatable-tbody > tr.p-datatable-row-selected > td),
+:deep(.p-datatable-tbody > tr.p-highlight > td) {
+  background-color: transparent !important;
+}
+
+:deep(.p-datatable-tbody > tr.p-datatable-row-selected:hover),
+:deep(.p-datatable-tbody > tr.p-highlight:hover) {
+  background-color: #7c7c7cff !important;
 }
 </style>
 

@@ -1,11 +1,8 @@
-@import "./caido.css";
-@import "./primevue.css";
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
 /* Compare Plugin Specific Styles */
-/* Using Caido's color system for consistent theming */
 
 /* Custom scrollbar for comparison tables */
 .p-datatable-wrapper::-webkit-scrollbar {
@@ -28,32 +25,32 @@
 }
 
 /* Enhanced table styling for better readability */
-.p-datatable .p-datatable-thead > tr > th {
+.p-datatable .p-datatable-thead>tr>th {
   @apply font-semibold text-xs uppercase tracking-wider;
   border-bottom: 2px solid hsl(var(--c-surface-300));
   padding: 0.75rem 0.5rem;
 }
 
-.p-datatable .p-datatable-tbody > tr > td {
+.p-datatable .p-datatable-tbody>tr>td {
   @apply text-sm;
   padding: 0.5rem;
   border-bottom: 1px solid hsl(var(--c-surface-200));
 }
 
-.p-datatable .p-datatable-tbody > tr:hover {
+.p-datatable .p-datatable-tbody>tr:hover {
   background-color: hsl(var(--c-surface-100)) !important;
 }
 
-[data-mode="dark"] .p-datatable .p-datatable-tbody > tr:hover {
+[data-mode="dark"] .p-datatable .p-datatable-tbody>tr:hover {
   background-color: hsl(var(--c-surface-800)) !important;
 }
 
 /* Selection styling */
-.p-datatable .p-datatable-tbody > tr.p-datatable-row-selected {
+.p-datatable .p-datatable-tbody>tr.p-datatable-row-selected {
   background-color: hsl(var(--c-primary-100)) !important;
 }
 
-[data-mode="dark"] .p-datatable .p-datatable-tbody > tr.p-datatable-row-selected {
+[data-mode="dark"] .p-datatable .p-datatable-tbody>tr.p-datatable-row-selected {
   background-color: hsl(var(--c-primary-900)) !important;
 }
 
@@ -91,7 +88,8 @@
   @apply font-medium text-xs;
   min-width: 3rem;
   text-align: center;
-  border-radius: 2px !important; /* CUBE - small corner radius */
+  border-radius: 2px !important;
+  /* CUBE - small corner radius */
   padding: 0.25rem 0.5rem !important;
 }
 
@@ -111,9 +109,9 @@
 }
 
 /* VERY DISTINCT colors for each data type - Centered text */
-.p-badge[data-type="clipboard"], 
+.p-badge[data-type="clipboard"],
 [data-type="clipboard"] {
-  background: #000000 !important; /* Pure black for clipboard */
+  background: #000000 !important;
   color: #ffffff !important;
   border-color: #333333;
   font-weight: 700 !important;
@@ -127,7 +125,7 @@
 
 .p-badge[data-type="file"],
 [data-type="file"] {
-  background: #1e40af !important; /* Bright blue for files */
+  background: #1e40af !important;
   color: #ffffff !important;
   border-color: #3b82f6;
   font-weight: 700 !important;
@@ -141,7 +139,8 @@
 
 .p-badge[data-type="request"],
 [data-type="request"] {
-  background: #059669 !important; /* Emerald green for requests */
+  background: #059669 !important;
+  /* Emerald green for requests */
   color: #ffffff !important;
   border-color: #10b981;
   font-weight: 700 !important;
@@ -155,7 +154,7 @@
 
 .p-badge[data-type="response"],
 [data-type="response"] {
-  background: #dc2626 !important; /* Bright red for responses */
+  background: #dc2626 !important;
   color: #ffffff !important;
   border-color: #ef4444;
   font-weight: 700 !important;
@@ -169,25 +168,26 @@
 
 /* Dark mode - maintain distinct colors but even more contrast */
 [data-mode="dark"] .p-badge[data-type="clipboard"] {
-  background: #000000 !important; /* Pure black for maximum contrast */
+  background: #000000 !important;
   color: #ffffff !important;
   border-color: #555555;
 }
 
 [data-mode="dark"] .p-badge[data-type="file"] {
-  background: #1d4ed8 !important; /* Brighter blue in dark mode */
+  background: #1d4ed8 !important;
   color: #ffffff !important;
   border-color: #3b82f6;
 }
 
 [data-mode="dark"] .p-badge[data-type="request"] {
-  background: #047857 !important; /* Brighter green in dark mode */
+  background: #047857 !important;
+  /* Brighter green in dark mode */
   color: #ffffff !important;
   border-color: #10b981;
 }
 
 [data-mode="dark"] .p-badge[data-type="response"] {
-  background: #dc2626 !important; /* Bright red in dark mode */
+  background: #dc2626 !important;
   color: #ffffff !important;
   border-color: #f87171;
 }
@@ -198,7 +198,7 @@
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .h-\[calc\(100\%-8rem\)\] {
     height: auto;
     min-height: 60vh;
@@ -213,7 +213,7 @@
 
 /* Focus states for accessibility */
 .p-button:focus,
-.p-datatable .p-datatable-tbody > tr:focus {
+.p-datatable .p-datatable-tbody>tr:focus {
   outline: 2px solid hsl(var(--c-primary-600));
   outline-offset: 2px;
 }

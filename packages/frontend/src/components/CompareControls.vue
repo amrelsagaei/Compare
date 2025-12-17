@@ -35,25 +35,23 @@ const handleCompareBytes = () => emit("compareBytes");
 </script>
 
 <template>
-  <div class="border-t border-surface-300 dark:border-surface-700 mt-4 pt-4 bg-surface-0 dark:bg-surface-900">
-    <div class="flex justify-center">
-      <div class="flex gap-4">
-        <Button 
-          label="Compare Words" 
-          icon="fas fa-spell-check" 
-          @click="handleCompareWords"
-          :disabled="!canCompare"
-          class="min-w-32"
-        />
-        <Button 
-          label="Compare Bytes" 
-          icon="fas fa-binary" 
-          @click="handleCompareBytes"
-          :disabled="!canCompare"
-          severity="secondary"
-          class="min-w-32"
-        />
-      </div>
+  <div class="py-3 flex justify-center">
+    <div class="flex gap-4">
+      <Button 
+        label="Compare Words" 
+        icon="fas fa-spell-check" 
+        @click="handleCompareWords"
+        :disabled="!canCompare"
+        class="min-w-32"
+      />
+      <Button 
+        label="Compare Bytes" 
+        icon="fas fa-code" 
+        @click="handleCompareBytes"
+        :disabled="!canCompare"
+        severity="secondary"
+        class="min-w-32"
+      />
     </div>
   </div>
 </template>

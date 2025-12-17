@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import MenuBar from "primevue/menubar";
+
 interface Props {
   currentTab?: string;
 }
@@ -7,15 +9,26 @@ interface Emits {
   (e: 'switch-tab', tab: string): void;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   currentTab: 'compare'
 });
 
 const emit = defineEmits<Emits>();
 
-const switchToTab = (tab: string) => {
-  emit('switch-tab', tab);
-};
+const items = [
+  {
+    label: "Compare",
+    command: () => {
+      emit('switch-tab', 'compare');
+    },
+  },
+  {
+    label: "Docs",
+    command: () => {
+      emit('switch-tab', 'docs');
+    },
+  },
+];
 </script>
 
 <script lang="ts">
@@ -25,41 +38,31 @@ export default {
 </script>
 
 <template>
-  <div class="mb-4">
-    <div class="flex items-center justify-between mb-2">
-      <h1 class="text-2xl font-bold text-surface-900 dark:text-surface-0">
-        <i class="fas fa-columns mr-2 text-primary-600"></i>
-        Compare
-      </h1>
-      
-      <!-- Navigation Buttons -->
-      <div class="flex items-center gap-2">
-        <!-- Back Arrow (only visible in docs) -->
-        <button
-          v-if="currentTab === 'docs'"
-          @click="switchToTab('compare')"
-          class="px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300 hover:bg-surface-200 dark:hover:bg-surface-700"
+  <MenuBar breakpoint="320px">
+    <template #start>
+      <div class="flex">
+        <div class="px-3 py-2 font-bold text-gray-300">Compare</div>
+        <div
+          v-for="(item, index) in items"
+          :key="index"
+          class="px-3 py-2 cursor-pointer text-gray-300 transition-all duration-200 ease-in-out"
+          :class="{
+            'bg-zinc-800/40': currentTab === item.label.toLowerCase(),
+            'hover:bg-gray-800/10': currentTab !== item.label.toLowerCase(),
+          }"
+          @mousedown="item.command"
         >
-          <i class="fas fa-arrow-left text-sm"></i>
-        </button>
-        
-        <!-- Docs Button (only visible in compare) -->
-        <button
-          v-if="currentTab === 'compare'"
-          @click="switchToTab('docs')"
-          class="px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300 hover:bg-surface-200 dark:hover:bg-surface-700"
-        >
-          <i class="fas fa-book text-sm"></i>
-          Docs
-        </button>
+          {{ item.label }}
+        </div>
       </div>
-    </div>
-    
-    <p class="text-surface-100 dark:text-surface-100">
-      {{ currentTab === 'docs' 
-          ? 'Master the Compare plugin with comprehensive guides and examples' 
-          : 'Compare requests, responses, and files with visual difference highlighting' 
-      }}
-    </p>
-  </div>
+    </template>
+
+    <template #end>
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <span class="text-sm text-gray-400">
+          Side-by-side comparison with diff highlighting
+        </span>
+      </div>
+    </template>
+  </MenuBar>
 </template>
