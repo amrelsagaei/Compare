@@ -531,8 +531,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="h-full w-full p-4 bg-surface-0 dark:bg-surface-900 flex flex-col">
-    <!-- Header -->
+  <div class="h-full flex flex-col gap-1">
+    <!-- Header (Autorize-style MenuBar) -->
     <CompareHeader 
       :current-tab="currentTab"
       @switch-tab="handleTabSwitch" 
@@ -541,34 +541,38 @@ onMounted(async () => {
     <!-- Tab Content -->
     <div class="flex-1 min-h-0">
       <!-- Compare Tab -->
-      <div v-if="currentTab === 'compare'" class="h-full flex flex-col">
-        <!-- Main content area - Force 50-50 layout on all screen sizes -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 min-h-0 min-w-0 max-h-full">
-          <!-- Original -->
-          <ComparePanel
-            :panel-number="1"
-            :panel-state="originalState"
-            :comparison-in-progress="uiState.comparisonInProgress"
-            @paste="handlePaste"
-            @load="handleLoad"
-            @remove="handleRemove"
-            @clear="handleClear"
-            @transfer="handleTransfer"
-            @update:selection="updateOriginalSelection"
-          />
+      <div v-if="currentTab === 'compare'" class="h-full flex flex-col gap-1.5">
+        <!-- Main content area - 50-50 horizontal layout -->
+        <div class="flex-1 min-h-0 flex gap-1.5">
+          <!-- Original Panel - 50% width -->
+          <div class="w-1/2 min-w-0 h-full">
+            <ComparePanel
+              :panel-number="1"
+              :panel-state="originalState"
+              :comparison-in-progress="uiState.comparisonInProgress"
+              @paste="handlePaste"
+              @load="handleLoad"
+              @remove="handleRemove"
+              @clear="handleClear"
+              @transfer="handleTransfer"
+              @update:selection="updateOriginalSelection"
+            />
+          </div>
 
-          <!-- Modified -->
-          <ComparePanel
-            :panel-number="2"
-            :panel-state="modifiedState"
-            :comparison-in-progress="uiState.comparisonInProgress"
-            @paste="handlePaste"
-            @load="handleLoad"
-            @remove="handleRemove"
-            @clear="handleClear"
-            @transfer="handleTransfer"
-            @update:selection="updateModifiedSelection"
-          />
+          <!-- Modified Panel - 50% width -->
+          <div class="w-1/2 min-w-0 h-full">
+            <ComparePanel
+              :panel-number="2"
+              :panel-state="modifiedState"
+              :comparison-in-progress="uiState.comparisonInProgress"
+              @paste="handlePaste"
+              @load="handleLoad"
+              @remove="handleRemove"
+              @clear="handleClear"
+              @transfer="handleTransfer"
+              @update:selection="updateModifiedSelection"
+            />
+          </div>
         </div>
 
         <!-- Bottom Controls - Fixed at bottom -->

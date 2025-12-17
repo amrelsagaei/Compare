@@ -2,7 +2,6 @@
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue';
 import Dialog from 'primevue/dialog';
 import Checkbox from 'primevue/checkbox';
-import Badge from 'primevue/badge';
 
 import { ComparisonResult, ComparisonDiff, generateComparisonStats } from '../utils/comparisonEngine';
 
@@ -148,8 +147,8 @@ onUnmounted(() => {
               Original (ID: {{ comparisonResult.id1 }})
             </h3>
             <div class="flex flex-wrap gap-2 text-xs">
-              <Badge :value="`Length: ${comparisonResult.length1}`" severity="info" />
-              <Badge :value="`Source: ${comparisonResult.source1 || 'Unknown'}`" severity="secondary" />
+              <span class="px-2 py-1 text-white text-xs rounded-sm" style="background-color: #a21c4b;">Length: {{ comparisonResult.length1 }}</span>
+              <span class="px-2 py-1 bg-surface-600 text-white text-xs rounded-sm">Source: {{ comparisonResult.source1 || 'Unknown' }}</span>
             </div>
           </div>
           <div>
@@ -157,8 +156,8 @@ onUnmounted(() => {
               Modified (ID: {{ comparisonResult.id2 }})
             </h3>
             <div class="flex flex-wrap gap-2 text-xs">
-              <Badge :value="`Length: ${comparisonResult.length2}`" severity="info" />
-              <Badge :value="`Source: ${comparisonResult.source2 || 'Unknown'}`" severity="secondary" />
+              <span class="px-2 py-1 text-white text-xs rounded-sm" style="background-color: #a21c4b;">Length: {{ comparisonResult.length2 }}</span>
+              <span class="px-2 py-1 bg-surface-600 text-white text-xs rounded-sm">Source: {{ comparisonResult.source2 || 'Unknown' }}</span>
             </div>
           </div>
         </div>

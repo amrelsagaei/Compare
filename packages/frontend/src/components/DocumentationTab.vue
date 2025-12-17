@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import Card from "primevue/card";
+import { onMounted, onUnmounted, ref } from "vue";
 
 interface Emits {
   (e: 'switch-tab', tab: string): void;
@@ -7,74 +8,57 @@ interface Emits {
 
 const emit = defineEmits<Emits>();
 
-// Toast notification system
-interface Toast {
-  id: number;
-  message: string;
-  type: 'success' | 'error' | 'info';
-}
+// Sidebar sections
+const sections = [
+  { id: "what-is-compare", title: "What is Compare?" },
+  { id: "quick-start", title: "Quick Start" },
+  { id: "data-input", title: "Data Input Methods" },
+  { id: "comparison-types", title: "Comparison Types" },
+  { id: "panel-management", title: "Panel Management" },
+  { id: "http-history", title: "HTTP History Integration" },
+  { id: "about", title: "About" },
+];
 
-const toasts = ref<Toast[]>([]);
-let toastId = 0;
+const activeSection = ref("what-is-compare");
 
-const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
-  const id = toastId++;
-  const toast = { id, message, type };
-  toasts.value.push(toast);
-  
-  // Auto remove after 3 seconds
-  setTimeout(() => {
-    const index = toasts.value.findIndex((t: Toast) => t.id === id);
-    if (index > -1) {
-      toasts.value.splice(index, 1);
-    }
-  }, 3000);
+const scrollToSection = (id: string) => {
+  const element = document.getElementById(id);
+  if (element && contentRef.value) {
+    contentRef.value.scrollTo({
+      top: element.offsetTop - 20,
+      behavior: "smooth",
+    });
+  }
 };
 
-// Copy to clipboard with specific toast messages
-const copyToClipboard = (text: string, type: string) => {
-  navigator.clipboard.writeText(text)
-    .then(() => {
-      if (type === 'email') {
-        showToast('Email copied to clipboard!', 'success');
-      } else if (type === 'linkedin') {
-        showToast('LinkedIn copied to clipboard!', 'success');
-      } else if (type === 'twitter') {
-        showToast('X/Twitter copied to clipboard!', 'success');
-      } else if (type === 'website') {
-        showToast('Website copied to clipboard!', 'success');
-      } else {
-        showToast('Link copied to clipboard!', 'success');
-      }
-    })
-    .catch(err => {
-      console.error('Failed to copy text:', err);
-      
-      // Fallback method
-      try {
-        const tempInput = document.createElement('input');
-        tempInput.value = text;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-        document.execCommand('copy');
-        document.body.removeChild(tempInput);
-        
-        if (type === 'email') {
-          showToast('Email copied to clipboard!', 'success');
-        } else if (type === 'linkedin') {
-          showToast('LinkedIn copied to clipboard!', 'success');
-        } else if (type === 'twitter') {
-          showToast('X/Twitter copied to clipboard!', 'success');
-        } else if (type === 'website') {
-          showToast('Website copied to clipboard!', 'success');
-        } else {
-          showToast('Link copied to clipboard!', 'success');
-        }
-      } catch (e) {
-        console.error('Fallback copy method failed:', e);
-        showToast('Failed to copy link', 'error');
-      }
-    });
+const contentRef = ref<HTMLElement>();
+
+const handleScroll = () => {
+  if (contentRef.value === undefined) return;
+
+  const scrollPosition = contentRef.value.scrollTop + 200;
+
+  for (let i = sections.length - 1; i >= 0; i--) {
+    const section = sections[i];
+    if (section === undefined) continue;
+    const element = document.getElementById(section.id);
+    if (element !== null && element.offsetTop <= scrollPosition) {
+      activeSection.value = section.id;
+      break;
+    }
+  }
+};
+
+onMounted(() => {
+  contentRef.value?.addEventListener("scroll", handleScroll);
+});
+
+onUnmounted(() => {
+  contentRef.value?.removeEventListener("scroll", handleScroll);
+});
+
+const isSectionActive = (sectionId: string) => {
+  return activeSection.value === sectionId;
 };
 </script>
 
@@ -85,276 +69,332 @@ export default {
 </script>
 
 <template>
-  <div class="h-full flex flex-col">
-    <!-- Main Content: Full Width Scrollable Area -->
-    <div class="flex-1 overflow-y-auto p-6 bg-surface-900 dark:bg-surface-900">
-      
-      <!-- Quick Start Guide -->
-      <div class="mb-8 bg-surface-800 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg p-6">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="p-2 bg-green-500 bg-opacity-20 rounded-lg border border-green-500 border-opacity-30">
-            <i class="fas fa-rocket text-white text-xl"></i>
-          </div>
-          <h3 class="text-xl font-bold text-surface-100 dark:text-surface-100 m-0">Quick Start Guide</h3>
-        </div>
-        <div class="bg-surface-700 dark:bg-surface-700 rounded-lg p-4 border border-surface-600 dark:border-surface-600">
-          <p class="text-surface-300 dark:text-surface-300 mb-4">Get started with Compare in 4 simple steps:</p>
-          <ol class="list-decimal pl-6 space-y-2 text-surface-100 dark:text-surface-100">
-            <li><strong>Add Data:</strong> Paste content, load files, or send from HTTP History</li>
-            <li><strong>Organize:</strong> Right-click items to transfer between Original and Modified</li>
-            <li><strong>Select Items:</strong> Choose one item from Original and one from Modified</li>
-            <li><strong>Compare:</strong> Click "Compare Words" or "Compare Bytes"</li>
-            <li><strong>Analyze:</strong> Review differences with color-coded highlighting</li>
-          </ol>
-        </div>
-      </div>
-
-      <!-- Main Documentation Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        
-        <!-- Data Input Methods -->
-        <div class="bg-surface-800 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg p-6">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="p-2 bg-blue-500 bg-opacity-20 rounded-lg border border-blue-500 border-opacity-30">
-              <i class="fas fa-upload text-white text-xl"></i>
+  <div class="h-full flex gap-1">
+    <!-- Sidebar Navigation -->
+    <Card
+      class="h-full w-[200px]"
+      :pt="{
+        body: { class: 'h-full p-0 flex flex-col' },
+        content: { class: 'h-full flex flex-col' },
+      }"
+    >
+      <template #content>
+        <div class="h-full overflow-auto p-4">
+          <nav class="space-y-1">
+            <div
+              v-for="section in sections"
+              :key="section.id"
+              class="cursor-pointer py-2 px-3 rounded text-sm transition-colors"
+              :class="
+                isSectionActive(section.id)
+                  ? 'bg-surface-700 text-white font-medium'
+                  : 'text-surface-300 hover:bg-surface-800 hover:text-white'
+              "
+              @click="scrollToSection(section.id)"
+            >
+              {{ section.title }}
             </div>
-            <h3 class="text-lg font-bold text-surface-100 dark:text-surface-100 m-0">Data Input Methods</h3>
-          </div>
-          <p class="text-surface-300 dark:text-surface-300 mb-4">Multiple ways to add data for comparison.</p>
-          
-          <h4 class="font-medium text-blue-400 dark:text-blue-400 mb-2">Available Methods:</h4>
-          <ul class="list-disc pl-5 space-y-1 text-sm text-surface-100 dark:text-surface-100 mb-4">
-            <li><strong>Paste:</strong> Copy content to clipboard and click "Paste"</li>
-            <li><strong>Load File:</strong> Select files from your system</li>
-            <li><strong>HTTP History:</strong> Right-click requests → "Compare: Send to Original/Modified"</li>
-          </ul>
-          
-          <h4 class="font-medium text-blue-400 dark:text-blue-400 mb-2">File Support:</h4>
-          <ul class="list-disc pl-5 space-y-1 text-sm text-surface-100 dark:text-surface-100">
-            <li>Text files, HTTP requests/responses</li>
-            <li>Up to 10MB file size limit</li>
-            <li>Automatic content type detection</li>
-          </ul>
+          </nav>
         </div>
+      </template>
+    </Card>
 
-        <!-- Comparison Features -->
-        <div class="bg-surface-800 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg p-6">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="p-2 bg-orange-500 bg-opacity-20 rounded-lg border border-orange-500 border-opacity-30">
-              <i class="fas fa-exchange-alt text-white text-xl"></i>
-            </div>
-            <h3 class="text-lg font-bold text-surface-100 dark:text-surface-100 m-0">Comparison Types</h3>
-          </div>
-          <p class="text-surface-300 dark:text-surface-300 mb-4">Choose the right comparison method for your data.</p>
-          
-          <h4 class="font-medium text-orange-400 dark:text-orange-400 mb-2">Word-Level Comparison:</h4>
-          <ul class="list-disc pl-5 space-y-1 text-sm text-surface-100 dark:text-surface-100 mb-4">
-            <li>Best for HTTP requests/responses</li>
-            <li>Intelligent word-boundary detection</li>
-            <li>Optimized for text content analysis</li>
-          </ul>
-          
-          <h4 class="font-medium text-orange-400 dark:text-orange-400 mb-2">Byte-Level Comparison:</h4>
-          <ul class="list-disc pl-5 space-y-1 text-sm text-surface-100 dark:text-surface-100">
-            <li>Character-by-character analysis</li>
-            <li>Precise difference detection</li>
-            <li>Ideal for binary or encoded content</li>
-          </ul>
-        </div>
+    <!-- Main Content -->
+    <Card
+      class="h-full flex-1"
+      :pt="{
+        body: { class: 'h-full p-0 flex flex-col' },
+        content: { class: 'h-full flex flex-col overflow-auto' },
+      }"
+    >
+      <template #content>
+        <div ref="contentRef" class="h-full overflow-auto p-4">
+          <div class="max-w-3xl space-y-12 pb-[36rem]">
+            <!-- What is Compare? -->
+            <section id="what-is-compare">
+              <h2 class="text-2xl font-semibold mb-4">What is Compare?</h2>
+              <p class="text-surface-300 leading-relaxed mb-4">
+                Compare is a plugin for Caido that helps security professionals perform 
+                side-by-side comparison of HTTP requests, responses, and files with 
+                visual difference highlighting.
+              </p>
+              <p class="text-surface-300 leading-relaxed">
+                Think of it as a dedicated diff tool built into Caido: load two pieces 
+                of data, compare them by words or bytes, and instantly see what's 
+                different with color-coded highlighting.
+              </p>
+            </section>
 
-        <!-- Panel Management -->
-        <div class="bg-surface-800 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg p-6">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="p-2 bg-purple-500 bg-opacity-20 rounded-lg border border-purple-500 border-opacity-30">
-              <i class="fas fa-cogs text-white text-xl"></i>
-            </div>
-            <h3 class="text-lg font-bold text-surface-100 dark:text-surface-100 m-0">Panel Management</h3>
-          </div>
-          <p class="text-surface-300 dark:text-surface-300 mb-4">Efficiently organize and manage your comparison data.</p>
-          
-          <h4 class="font-medium text-purple-400 dark:text-purple-400 mb-2">Operations:</h4>
-          <ul class="list-disc pl-5 space-y-1 text-sm text-surface-100 dark:text-surface-100 mb-4">
-            <li><strong>Remove:</strong> Delete selected items from Original/Modified</li>
-            <li><strong>Clear:</strong> Remove all items from Original or Modified</li>
-            <li><strong>Transfer:</strong> Right-click any item to transfer between panels</li>
-            <li><strong>Multi-select:</strong> Bulk operations on multiple items</li>
-          </ul>
-          
-          <h4 class="font-medium text-purple-400 dark:text-purple-400 mb-2">Selection:</h4>
-          <ul class="list-disc pl-5 space-y-1 text-sm text-surface-100 dark:text-surface-100">
-            <li>Click items to select for comparison</li>
-            <li>Requires one item from Original and one from Modified</li>
-            <li>Data automatically persists per project</li>
-          </ul>
-        </div>
+            <!-- Quick Start -->
+            <section id="quick-start">
+              <h2 class="text-2xl font-semibold mb-4">Quick Start</h2>
+              <p class="text-surface-300 leading-relaxed mb-6">
+                Get up and running with Compare in just a few steps:
+              </p>
 
-        <!-- Comparison Results -->
-        <div class="bg-surface-800 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg p-6">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="p-2 bg-red-500 bg-opacity-20 rounded-lg border border-red-500 border-opacity-30">
-              <i class="fas fa-search text-white text-xl"></i>
-            </div>
-            <h3 class="text-lg font-bold text-surface-100 dark:text-surface-100 m-0">Analysis Features</h3>
-          </div>
-          <p class="text-surface-300 dark:text-surface-300 mb-4">Advanced features to analyze comparison results.</p>
-          
-          <h4 class="font-medium text-red-400 dark:text-red-400 mb-2">Visual Highlighting:</h4>
-          <ul class="list-disc pl-5 space-y-1 text-sm text-surface-100 dark:text-surface-100 mb-4">
-            <li><span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded text-xs">Added</span> content in green</li>
-            <li><span class="px-2 py-1 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded text-xs">Deleted</span> content in red</li>
-            <li><span class="px-2 py-1 bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 rounded text-xs">Modified</span> content in orange</li>
-          </ul>
-          
-          <h4 class="font-medium text-red-400 dark:text-red-400 mb-2">Navigation:</h4>
-          <ul class="list-disc pl-5 space-y-1 text-sm text-surface-100 dark:text-surface-100">
-            <li>Sync Views for synchronized scrolling</li>
-            <li>Side-by-side comparison layout</li>
-            <li>Detailed statistics and counts</li>
-          </ul>
-        </div>
-      </div>
+              <div class="space-y-4">
+                <div class="border border-surface-700 rounded p-4">
+                  <h3 class="text-lg font-semibold mb-3">1. Add Data to Original</h3>
+                  <p class="text-surface-300 leading-relaxed">
+                    Paste content, load a file, or right-click a request in HTTP History 
+                    and select "Send to Original".
+                  </p>
+                </div>
 
-      <!-- HTTP History Integration -->
-      <div class="mb-8 bg-surface-800 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg p-6">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="p-2 bg-indigo-500 bg-opacity-20 rounded-lg border border-indigo-500 border-opacity-30">
-            <i class="fas fa-history text-white text-xl"></i>
-          </div>
-          <h3 class="text-xl font-bold text-surface-100 dark:text-surface-100 m-0">HTTP History Integration</h3>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="bg-surface-700 dark:bg-surface-700 rounded-lg p-4 border border-surface-600 dark:border-surface-600">
-            <h4 class="font-medium text-indigo-400 dark:text-indigo-400 mb-2">Individual Requests:</h4>
-            <ol class="list-decimal pl-5 space-y-1 text-sm text-surface-100 dark:text-surface-100">
-              <li>Right-click any request in Caido HTTP History</li>
-              <li>Select "Compare: Send to Original" or "Send to Modified"</li>
-              <li>Request data appears automatically in Compare</li>
-            </ol>
-          </div>
-          <div class="bg-surface-700 dark:bg-surface-700 rounded-lg p-4 border border-surface-600 dark:border-surface-600">
-            <h4 class="font-medium text-indigo-400 dark:text-indigo-400 mb-2">Bulk Operations:</h4>
-            <ol class="list-decimal pl-5 space-y-1 text-sm text-surface-100 dark:text-surface-100">
-              <li>Select multiple requests (up to 25)</li>
-              <li>Right-click → "Compare: Send to Original/Modified"</li>
-              <li>All requests processed automatically</li>
-            </ol>
-          </div>
-        </div>
-      </div>
+                <div class="border border-surface-700 rounded p-4">
+                  <h3 class="text-lg font-semibold mb-3">2. Add Data to Modified</h3>
+                  <p class="text-surface-300 leading-relaxed">
+                    Add the second piece of content you want to compare using the same 
+                    methods - paste, file, or from HTTP History.
+                  </p>
+                </div>
 
-      <!-- About Section -->
-      <div class="bg-surface-800 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg p-6">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="p-2 bg-primary-500 bg-opacity-20 rounded-lg border border-primary-500 border-opacity-30">
-            <i class="fas fa-info-circle text-white text-xl"></i>
-          </div>
-          <h3 class="text-xl font-bold text-surface-100 dark:text-surface-100 m-0">About</h3>
-        </div>
-        
-        <div class="flex items-center justify-between mb-6">
-          <div>
-            <h3 class="text-2xl font-bold text-surface-100 dark:text-surface-100">Compare</h3>
-            <p class="text-sm text-surface-300 dark:text-surface-300">Version 1.0.1</p>
-          </div>
-          <button
-            @click="copyToClipboard('https://github.com/amrelsagaei/compare', 'github')"
-            class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-          >
-            <i class="fab fa-github mr-2"></i>
-            Star on GitHub
-          </button>
-        </div>
+                <div class="border border-surface-700 rounded p-4">
+                  <h3 class="text-lg font-semibold mb-3">3. Select Items</h3>
+                  <p class="text-surface-300 leading-relaxed">
+                    Click on one item in the Original panel and one item in the Modified 
+                    panel to select them for comparison.
+                  </p>
+                </div>
 
-        <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 mb-6 border-l-4 border-blue-500">
-          <p class="text-surface-100 dark:text-surface-100 leading-relaxed">
-            Compare is a professional Caido plugin for security professionals who need precise side-by-side 
-            comparison of HTTP requests, responses, and files with visual difference highlighting.
-          </p>
-        </div>
+                <div class="border border-surface-700 rounded p-4">
+                  <h3 class="text-lg font-semibold mb-3">4. Compare</h3>
+                  <p class="text-surface-300 leading-relaxed">
+                    Click "Compare Words" for text comparison or "Compare Bytes" for 
+                    character-by-character analysis.
+                  </p>
+                </div>
+              </div>
 
-        <div class="py-4 border-t border-surface-600 dark:border-surface-600">
-          <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <div class="text-sm text-surface-300 dark:text-surface-300">
-              <span class="font-medium">Made with</span>
-              <i class="fas fa-heart text-red-500 mx-1"></i>
-              <span class="font-medium">by</span>
-              <button
-                @click="copyToClipboard('https://amrelsagaei.com', 'website')"
-                class="font-medium text-primary-400 hover:text-primary-300 transition-colors ml-1"
-              >
-                Amr Elsagaei
-              </button>
-            </div>
-            <div class="flex gap-4">
-              <button
-                @click="copyToClipboard('info@amrelsagaei.com', 'email')"
-                class="text-sm text-primary-400 hover:text-primary-300 transition-colors flex items-center gap-1"
-              >
-                <i class="fas fa-envelope"></i>
-                Email
-              </button>
-              <button
-                @click="copyToClipboard('https://www.linkedin.com/in/amrelsagaei', 'linkedin')"
-                class="text-sm text-primary-400 hover:text-primary-300 transition-colors flex items-center gap-1"
-              >
-                <i class="fab fa-linkedin"></i>
-                LinkedIn
-              </button>
-              <button
-                @click="copyToClipboard('https://x.com/amrelsagaei', 'twitter')"
-                class="text-sm text-primary-400 hover:text-primary-300 transition-colors flex items-center gap-1"
-              >
-                <i class="fab fa-x-twitter"></i>
-                X/Twitter
-              </button>
-            </div>
+              <div class="mt-6 bg-surface-800 border border-surface-700 rounded p-4">
+                <p class="text-surface-300 text-sm">
+                  <i class="fas fa-rocket text-blue-400 mr-2"></i>
+                  That's it! The comparison modal will show color-coded differences 
+                  between your two selections.
+                </p>
+              </div>
+            </section>
+
+            <!-- Data Input Methods -->
+            <section id="data-input">
+              <h2 class="text-2xl font-semibold mb-4">Data Input Methods</h2>
+              <p class="text-surface-300 leading-relaxed mb-6">
+                There are several ways to add data to Compare:
+              </p>
+
+              <div class="space-y-6">
+                <div>
+                  <h3 class="text-lg font-semibold mb-3">1. Paste from Clipboard</h3>
+                  <p class="text-surface-300 leading-relaxed">
+                    Copy any text to your clipboard and click the "Paste" button. 
+                    The content will be added as a clipboard item.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 class="text-lg font-semibold mb-3">2. Load from File</h3>
+                  <p class="text-surface-300 leading-relaxed">
+                    Click "Load" to open a file picker. Select any text file 
+                    (up to 10MB) to add it to the panel.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 class="text-lg font-semibold mb-3">3. Send from HTTP History</h3>
+                  <p class="text-surface-300 leading-relaxed mb-3">
+                    Right-click any request in Caido's HTTP History:
+                  </p>
+                  <ol class="list-decimal list-inside space-y-2 text-surface-300 ml-4">
+                    <li>Select "Send to Original" to add to the left panel</li>
+                    <li>Select "Send to Modified" to add to the right panel</li>
+                    <li>You can select multiple requests (up to 25)</li>
+                  </ol>
+                </div>
+              </div>
+            </section>
+
+            <!-- Comparison Types -->
+            <section id="comparison-types">
+              <h2 class="text-2xl font-semibold mb-4">Comparison Types</h2>
+              <p class="text-surface-300 leading-relaxed mb-6">
+                Choose the right comparison method for your data:
+              </p>
+
+              <div class="space-y-6">
+                <div class="border border-surface-700 rounded p-4">
+                  <h3 class="text-lg font-semibold mb-2 text-green-400">
+                    Word-Level Comparison
+                  </h3>
+                  <p class="text-surface-300 leading-relaxed mb-3">
+                    Best for comparing HTTP requests, responses, and text content. 
+                    Uses intelligent word-boundary detection to highlight meaningful 
+                    differences.
+                  </p>
+                  <p class="text-surface-300 text-sm">
+                    <strong>Use when:</strong> Comparing API responses, HTML content, 
+                    configuration files, or any structured text.
+                  </p>
+                </div>
+
+                <div class="border border-surface-700 rounded p-4">
+                  <h3 class="text-lg font-semibold mb-2 text-blue-400">
+                    Byte-Level Comparison
+                  </h3>
+                  <p class="text-surface-300 leading-relaxed mb-3">
+                    Character-by-character analysis for precise difference detection. 
+                    Shows every single character change.
+                  </p>
+                  <p class="text-surface-300 text-sm">
+                    <strong>Use when:</strong> Comparing encoded content, binary-like 
+                    data, or when you need exact character differences.
+                  </p>
+                </div>
+              </div>
+
+              <div class="mt-6 bg-surface-800 border border-surface-700 rounded p-4">
+                <p class="text-surface-300 text-sm">
+                  <i class="fas fa-palette text-blue-400 mr-2"></i>
+                  <strong>Color coding:</strong>
+                  <span class="text-green-400 ml-2">Green = Added</span>
+                  <span class="text-red-400 ml-4">Red = Deleted</span>
+                </p>
+              </div>
+            </section>
+
+            <!-- Panel Management -->
+            <section id="panel-management">
+              <h2 class="text-2xl font-semibold mb-4">Panel Management</h2>
+              <p class="text-surface-300 leading-relaxed mb-6">
+                Efficiently organize and manage your comparison data:
+              </p>
+
+              <div class="space-y-4">
+                <div class="border-l-4 border-blue-500 pl-4">
+                  <h4 class="font-semibold mb-1">Remove</h4>
+                  <p class="text-surface-300 text-sm">
+                    Select items and click "Remove" to delete them from the panel.
+                  </p>
+                </div>
+                <div class="border-l-4 border-blue-500 pl-4">
+                  <h4 class="font-semibold mb-1">Clear</h4>
+                  <p class="text-surface-300 text-sm">
+                    Click "Clear" to remove all items from a panel at once.
+                  </p>
+                </div>
+                <div class="border-l-4 border-blue-500 pl-4">
+                  <h4 class="font-semibold mb-1">Transfer</h4>
+                  <p class="text-surface-300 text-sm">
+                    Right-click any item and select "Transfer" to move it to the 
+                    other panel. Works with multiple selected items.
+                  </p>
+                </div>
+                <div class="border-l-4 border-blue-500 pl-4">
+                  <h4 class="font-semibold mb-1">Multi-Select</h4>
+                  <p class="text-surface-300 text-sm">
+                    Click checkboxes to select multiple items for bulk operations.
+                  </p>
+                </div>
+              </div>
+
+              <div class="mt-6 bg-surface-800 border border-surface-700 rounded p-4">
+                <p class="text-surface-300 text-sm">
+                  <i class="fas fa-info-circle text-blue-400 mr-2"></i>
+                  Data automatically persists per project. Switch projects and your 
+                  Compare data stays organized.
+                </p>
+              </div>
+            </section>
+
+            <!-- HTTP History Integration -->
+            <section id="http-history">
+              <h2 class="text-2xl font-semibold mb-4">HTTP History Integration</h2>
+              <p class="text-surface-300 leading-relaxed mb-6">
+                Compare integrates directly with Caido's HTTP History for quick access:
+              </p>
+
+              <div class="space-y-4">
+                <div class="border border-surface-700 rounded p-4">
+                  <h4 class="font-semibold mb-3">Individual Requests</h4>
+                  <ol class="list-decimal list-inside space-y-2 text-surface-300">
+                    <li>Right-click any request in HTTP History</li>
+                    <li>Select "Send to Original" or "Send to Modified"</li>
+                    <li>Request data appears automatically in Compare</li>
+                  </ol>
+                </div>
+
+                <div class="border border-surface-700 rounded p-4">
+                  <h4 class="font-semibold mb-3">Bulk Operations</h4>
+                  <ol class="list-decimal list-inside space-y-2 text-surface-300">
+                    <li>Select multiple requests (up to 25)</li>
+                    <li>Right-click → "Send to Original" or "Send to Modified"</li>
+                    <li>All requests are processed automatically</li>
+                  </ol>
+                </div>
+              </div>
+            </section>
+
+            <!-- About -->
+            <section id="about">
+              <h2 class="text-2xl font-semibold mb-4">About</h2>
+              <p class="text-surface-300 leading-relaxed mb-6">
+                Compare is a professional Caido plugin for security professionals 
+                who need precise side-by-side comparison capabilities.
+              </p>
+
+              <div class="border border-surface-700 rounded p-4">
+                <div class="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 class="text-xl font-bold">Compare</h3>
+                    <p class="text-sm text-surface-400">Version 1.0.1</p>
+                  </div>
+                </div>
+
+                <div class="pt-4 border-t border-surface-700">
+                  <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                    <div class="text-sm text-surface-300">
+                      <span class="font-medium">Made with</span>
+                      <i class="fas fa-heart text-red-500 mx-1"></i>
+                      <span class="font-medium">by</span>
+                      <a 
+                        href="https://amrelsagaei.com" 
+                        target="_blank"
+                        class="font-medium text-primary-400 hover:text-primary-300 transition-colors ml-1"
+                      >
+                        Amr Elsagaei
+                      </a>
+                    </div>
+                    <div class="flex gap-4">
+                      <a 
+                        href="mailto:info@amrelsagaei.com"
+                        class="text-sm text-primary-400 hover:text-primary-300 transition-colors flex items-center gap-1"
+                      >
+                        <i class="fas fa-envelope"></i>
+                        Email
+                      </a>
+                      <a 
+                        href="https://www.linkedin.com/in/amrelsagaei"
+                        target="_blank"
+                        class="text-sm text-primary-400 hover:text-primary-300 transition-colors flex items-center gap-1"
+                      >
+                        <i class="fab fa-linkedin"></i>
+                        LinkedIn
+                      </a>
+                      <a 
+                        href="https://x.com/amrelsagaei"
+                        target="_blank"
+                        class="text-sm text-primary-400 hover:text-primary-300 transition-colors flex items-center gap-1"
+                      >
+                        <i class="fab fa-x-twitter"></i>
+                        X/Twitter
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
-      </div>
-      
-    </div>
-    
-    <!-- Toast Notifications -->
-    <div class="fixed top-4 right-4 z-50 space-y-2">
-      <div 
-        v-for="toast in toasts" 
-        :key="toast.id"
-        :class="[
-          'px-4 py-3 rounded-lg shadow-lg transition-all duration-300 ease-in-out',
-          'flex items-center gap-2 min-w-64 max-w-96',
-          toast.type === 'success' ? 'bg-green-600 text-white' :
-          toast.type === 'error' ? 'bg-red-600 text-white' :
-          'bg-blue-600 text-white'
-        ]"
-      >
-        <i :class="[
-          toast.type === 'success' ? 'fas fa-check-circle' :
-          toast.type === 'error' ? 'fas fa-exclamation-circle' :
-          'fas fa-info-circle'
-        ]"></i>
-        <span class="text-sm font-medium">{{ toast.message }}</span>
-      </div>
-    </div>
+      </template>
+    </Card>
   </div>
 </template>
-
-<style scoped>
-/* Custom scrollbar styling */
-.overflow-y-auto::-webkit-scrollbar {
-  width: 8px;
-}
-
-.overflow-y-auto::-webkit-scrollbar-track {
-  background: var(--surface-800);
-}
-
-.overflow-y-auto::-webkit-scrollbar-thumb {
-  background: var(--surface-600);
-  border-radius: 4px;
-}
-
-.overflow-y-auto::-webkit-scrollbar-thumb:hover {
-  background: var(--surface-500);
-}
-</style>
